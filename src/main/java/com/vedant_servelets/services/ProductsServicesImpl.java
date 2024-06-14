@@ -3,6 +3,7 @@ package com.vedant_servelets.services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import com.vedant_servelets.apis.GettingProductsImpl;
 import com.vedant_servelets.entities.Product;
 import com.vedant_servelets.entities.arrayProducts.ArrayProducts;
 import com.vedant_servelets.filehandling.JsonFileHandling;
+import com.vedant_servelets.utils.DBUtils;
 
 public class ProductsServicesImpl implements ProductsServices {
 
@@ -46,6 +48,20 @@ public class ProductsServicesImpl implements ProductsServices {
 
 
 		return mapProductsByCateg;
+	}
+	
+	public Product getProductById(long id) {
+		log.info(String.format("Getting product with id:- "+id));
+		Optional<Product> optionalPrd = DBUtils.getProductById(id);
+		
+		if(optionalPrd.isEmpty()) {
+			log.warn("Product with "+id+" is not present");
+			return null;
+		}
+		
+	
+		
+		return optionalPrd.get();
 	}
 
 }

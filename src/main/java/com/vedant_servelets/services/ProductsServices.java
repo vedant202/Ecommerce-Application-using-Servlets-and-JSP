@@ -8,6 +8,7 @@ import com.vedant_servelets.entities.Product;
 public interface ProductsServices {
 
 	HashMap<String, List<Product>> getAllProductsByCategeory();
+	Product getProductById(long id);
 
 
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,6 +24,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
 public class DBUtils {
+	private static Logger log=LogManager.getLogger(DBUtils.class);
 	public static void saveListOfProduct(Session session, ArrayList<Product> products) {
 		Transaction transaction = session.beginTransaction();
 
@@ -88,7 +91,7 @@ public class DBUtils {
 	public static Optional<List<Product>> getAllProducts() {
 		Optional<List<Product>> products = null;
 		Session session =  getSessionFactory().openSession();
-
+		log.info("Getting all products from DB");
 		try {
 			JpaCriteriaQuery<Product> query =session.getCriteriaBuilder().createQuery(Product.class);
 			var productRoot = query.from(Product.class);
@@ -102,8 +105,10 @@ public class DBUtils {
 					Hibernate.initialize(i.getImages());
 				});
 			}
+			log.info("Seccessfully retreve all products from database");
 		} catch (Exception e) {
 			// TODO: handle exception
+			log.info(e.getMessage());
 			e.printStackTrace();
 		}finally {
 			session.close();

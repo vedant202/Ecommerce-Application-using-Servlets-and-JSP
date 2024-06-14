@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.vedant_servelets.entities.Product;
+import com.vedant_servelets.services.ProductServicesImpl2;
 import com.vedant_servelets.services.ProductsServices;
 import com.vedant_servelets.services.ProductsServicesImpl;
 
@@ -27,11 +28,10 @@ public class Main extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 //		super.doGet(req, resp);
-		ProductsServices productsServices = new ProductsServicesImpl();
+		log.info(String.format("Request to /index has been received"));
+
+		ProductsServices productsServices = new ProductServicesImpl2();
 		HashMap<String, List<Product>> getAllProductsByCategeory=productsServices.getAllProductsByCategeory();
-
-
-//		req.setAttribute("products", new Gson().toJson(products.getProducts()));
 
 		Gson gson = new Gson();
 		req.setAttribute("products", gson.toJson(getAllProductsByCategeory));

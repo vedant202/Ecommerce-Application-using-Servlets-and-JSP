@@ -2,9 +2,14 @@ package com.vedant_servelets.AuthenticationAndAutheriztion;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.vedant_servelets.entities.User;
+import com.vedant_servelets.services.UserServices;
+import com.vedant_servelets.services.UserServicesImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,7 +42,7 @@ public class Login extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		log.entry();
+		UserServices services = new UserServicesImpl();
 		System.out.println("Post request to login");
 		log.info("Post Request to logging is being made");
 		System.out.println(req.getParameter("email"));
@@ -46,27 +51,27 @@ public class Login extends HttpServlet{
 		String email = req.getParameter("email");
 		String pass = req.getParameter("password");
 		log.info(String.format("Login request made by User %s and Password %s", email, pass));
-		if(!users.containsKey(email)) {
-			System.out.println("User is not present");
-			log.error("User %s and password %s is not present",email,pass);
+		
 
-			resp.getWriter().println("<h1>User is not present</h1>");
+		Optional<User> user=services.getUserByEmail(email);
+		
+		if(user.isEmpty()) {
+			resp.getWriter().write("User is not present");
 			return;
 		}
-
-		String[] userArr = users.get(email);
-		String userPass = userArr[0];
-		String userRole = userArr[1];
-
-		if(!userPass.equals(pass)) {
+		
+		if(!user.get().getPassword().equals(pass)) {
 			System.out.println("User password not matched");
 			resp.getWriter().println("<h1>User is not present</h1>");
 			return;
 		}
-		log.info(String.format("User with email %s and Role %s is logged in and redirected to index ",email,userRole ));
+		
+		
+		
+		log.info(String.format("User with email %s and Role %s is logged in and redirected to index ",email ));
 		HttpSession session  = req.getSession();
 		session.setAttribute("user", email);
-		session.setAttribute("role",userRole);
+//		session.setAttribute("role",userRole);
 		resp.sendRedirect("/FilterTuts/index");
 
 

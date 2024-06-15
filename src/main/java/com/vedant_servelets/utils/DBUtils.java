@@ -11,11 +11,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.criteria.JpaCriteriaQuery;
 
+import com.vedant_servelets.entities.Address;
 import com.vedant_servelets.entities.Dimensions;
 import com.vedant_servelets.entities.Product;
 import com.vedant_servelets.entities.Reviews;
+import com.vedant_servelets.entities.User;
 import com.vedant_servelets.entities.arrayProducts.ArrayProducts;
 import com.vedant_servelets.filehandling.JsonFileHandling;
 
@@ -51,6 +54,8 @@ public class DBUtils {
 		configuration.addAnnotatedClass(Dimensions.class);
 		configuration.addAnnotatedClass(Reviews.class);
 		configuration.addAnnotatedClass(Product.class);
+		configuration.addAnnotatedClass(Address.class);
+		configuration.addAnnotatedClass(User.class);
 		SessionFactory factory = configuration.buildSessionFactory();
 //		SessionFactory factory = new Configuration().addAnnotatedClass(Product.class).addAnnotatedClass(Reviews.class)
 //				.addAnnotatedClass(Dimension.class).buildSessionFactory();
@@ -150,6 +155,29 @@ public class DBUtils {
 		System.out.println(product);
 		return product;
 	}
+	
+	public static Optional<User> getUserByEmail(String email){
+		Session session = getSessionFactory().openSession();
+		Optional<User> user = null;
+		
+		try {
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			
+			CriteriaQuery<User> query=criteriaBuilder.createQuery(User.class);
+			Root<User> root=query.from(User.class);
+			query.select(root);
+			query.where(criteriaBuilder.equal(root.get("email"), email));
+			
+			user = Optional.ofNullable(session.createQuery(query).getSingleResult());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		
+		return user;
+	}
 
 	public static Optional<Reviews> getReviewsById(long id){
 		Session session = getSessionFactory().openSession();
@@ -194,5 +222,74 @@ public class DBUtils {
 		}
 		
 		return reviews;
+	}
+	
+	public static Optional<List<User>> getAllUsers(){
+		Session session = getSessionFactory().openSession();
+		Optional<List<User>> users=null;
+		try {
+			CriteriaQuery<User> criteriaQuery=session.getCriteriaBuilder().createQuery(User.class);
+			users=Optional.ofNullable(session.createSelectionQuery(criteriaQuery.select(criteriaQuery.from(User.class))).getResultList());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return users;
+	}
+	
+	
+	public static Optional<User> getUserById(long id){
+		Session session = getSessionFactory().openSession();
+		Optional<User> user= null;
+		
+		try {
+			HibernateCriteriaBuilder criteriaBuilder=session.getCriteriaBuilder();
+			CriteriaQuery<User> query=criteriaBuilder.createQuery(User.class);
+			Root<User> root=query.from(User.class);
+			query.select(root);
+			query.where(criteriaBuilder.equal(root.get("id"), id));
+			
+			user=Optional.ofNullable(session.createSelectionQuery(query).getSingleResult());
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		
+		return user;
+		
+	}
+	
+	
+	public static Optional<User> addUser(User u){
+		
+		Session session=getSessionFactory().openSession();
+		Boolean usersaved = false;
+		
+		try {
+			session.beginTransaction();
+			session.persist(u);
+			usersaved = true;
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			usersaved = false;
+			session.getTransaction().rollback();
+			e.printStackTrace();
+		}finally {
+			session.getTransaction().commit();
+			session.close();
+		}
+		if(!usersaved) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(u);
 	}
 }

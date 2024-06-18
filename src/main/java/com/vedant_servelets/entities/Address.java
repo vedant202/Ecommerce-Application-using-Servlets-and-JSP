@@ -15,19 +15,19 @@ public class Address implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	private String address1;
 	private String address2;
 	private String city;
 	private String state;
-	
+
 	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private User userId;
-	
+
 	public Address() {
 	}
-	
-	
+
+
 
 	public Address(String address1, String address2, String city, String state,User userId) {
 		super();
@@ -49,8 +49,8 @@ public class Address implements Serializable {
 		this.state = state;
 		this.userId=userId;
 	}
-	
-	
+
+
 
 
 
@@ -130,8 +130,8 @@ public class Address implements Serializable {
 		return "Address [id=" + id + ", address1=" + address1 + ", address2=" + address2 + ", city=" + city + ", state="
 				+ state + "]";
 	}
-	
-	
-	
-	
+
+
+
+
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,27 +52,36 @@ public class Login extends HttpServlet{
 		String email = req.getParameter("email");
 		String pass = req.getParameter("password");
 		log.info(String.format("Login request made by User %s and Password %s", email, pass));
-		
+
+		if(StringUtils.isEmpty(email) && StringUtils.isEmpty(pass)) {
+			resp.getWriter().write("Email or Password is blank.");
+			return;
+		}
 
 		Optional<User> user=services.getUserByEmail(email);
-		
+
+		System.out.println("User Login :- "+user);
+
 		if(user.isEmpty()) {
 			resp.getWriter().write("User is not present");
 			return;
 		}
-		
+
 		if(!user.get().getPassword().equals(pass)) {
 			System.out.println("User password not matched");
 			resp.getWriter().println("<h1>User is not present</h1>");
 			return;
 		}
-		
-		
-		
-		log.info(String.format("User with email %s and Role %s is logged in and redirected to index ",email ));
+
+
+		String role = user.get().getRole();
+
+
+		log.info(String.format("User with email %s and Role %s is logged in and redirected to index ",email,role ));
 		HttpSession session  = req.getSession();
 		session.setAttribute("user", email);
-//		session.setAttribute("role",userRole);
+		session.setAttribute("role",role);
+
 		resp.sendRedirect("/FilterTuts/index");
 
 

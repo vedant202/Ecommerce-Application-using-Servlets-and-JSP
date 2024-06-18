@@ -12,7 +12,7 @@ public class UserServicesImpl implements UserServices {
 	@Override
 	public Optional<User> addUser(User u) {
 		// TODO Auto-generated method stub
-		
+
 		return DBUtils.addUser(u);
 	}
 
@@ -21,7 +21,7 @@ public class UserServicesImpl implements UserServices {
 		// TODO Auto-generated method stub
 		return DBUtils.getUserById(id);
 	}
-	
+
 	@Override
 	public Optional<User> getUserByEmail(String email) {
 		// TODO Auto-generated method stub

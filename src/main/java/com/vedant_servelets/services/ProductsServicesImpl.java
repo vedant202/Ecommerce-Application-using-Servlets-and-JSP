@@ -49,18 +49,19 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return mapProductsByCateg;
 	}
-	
+
+	@Override
 	public Product getProductById(long id) {
 		log.info(String.format("Getting product with id:- "+id));
 		Optional<Product> optionalPrd = DBUtils.getProductById(id);
-		
+
 		if(optionalPrd.isEmpty()) {
 			log.warn("Product with "+id+" is not present");
 			return null;
 		}
-		
-	
-		
+
+
+
 		return optionalPrd.get();
 	}
 

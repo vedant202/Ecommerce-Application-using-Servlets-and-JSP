@@ -16,7 +16,7 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 	@Override
 	public HashMap<String, List<Product>> getAllProductsByCategeory() {
 		log.info(String.format("Getting products"));
-		
+
 		List<Product> products=null;
 		Optional<List<Product>> optionalProd=DBUtils.getAllProducts();
 		if(optionalProd.isEmpty()) {
@@ -24,7 +24,7 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 			return null;
 		}
 		products = optionalProd.get();
-		
+
 		HashMap<String, List<Product>> mapProductsByCateg = new HashMap();
 		products.stream().forEach(i->{
 			List<Product> prods =  mapProductsByCateg.get(i.getCategory());
@@ -37,7 +37,7 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 
 
 		return mapProductsByCateg;
-		
+
 	}
 
 }

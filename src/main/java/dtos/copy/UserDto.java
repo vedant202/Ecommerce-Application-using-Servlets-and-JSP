@@ -1,4 +1,4 @@
-package dtos;
+package dtos.copy;
 
 public class UserDto {
 	private String fname;

@@ -18,10 +18,10 @@ public class ProductsParams extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		System.out.println("Product Id :- "+req.getParameter("id"));
 		long id = Long.parseLong(req.getParameter("id"));
-		
+
 		ProductsServices productsServices = new ProductsServicesImpl();
 		Product product=productsServices.getProductById(id);
 //		resp.getWriter().print(product);

@@ -15,6 +15,7 @@ import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.criteria.JpaCriteriaQuery;
 
 import com.vedant_servelets.entities.Address;
+import com.vedant_servelets.entities.Cart;
 import com.vedant_servelets.entities.Dimensions;
 import com.vedant_servelets.entities.Product;
 import com.vedant_servelets.entities.Reviews;
@@ -56,6 +57,7 @@ public class DBUtils {
 		configuration.addAnnotatedClass(Product.class);
 		configuration.addAnnotatedClass(Address.class);
 		configuration.addAnnotatedClass(User.class);
+		configuration.addAnnotatedClass(Cart.class);
 		SessionFactory factory = configuration.buildSessionFactory();
 //		SessionFactory factory = new Configuration().addAnnotatedClass(Product.class).addAnnotatedClass(Reviews.class)
 //				.addAnnotatedClass(Dimension.class).buildSessionFactory();
@@ -103,7 +105,7 @@ public class DBUtils {
 			query.select(productRoot);
 			List<Product> listProds = session.createSelectionQuery(query).getResultList();
 			products=Optional.ofNullable(listProds.size()>0?listProds:null);
-			
+
 			if(!products.isEmpty()) {
 				products.get().forEach(i->{
 					Hibernate.initialize(i.getReviews());
@@ -118,16 +120,16 @@ public class DBUtils {
 		}finally {
 			session.close();
 		}
-		
+
 		return products;
-		
-		
+
+
 	}
-	
+
 	public static Optional<Product> getProductById(long id) {
 		Session session =  getSessionFactory().openSession();
 		Optional<Product> product = null;
-		
+
 		try {
 			CriteriaBuilder criteriaBuilder=session.getCriteriaBuilder();
 			CriteriaQuery<Product> query=criteriaBuilder.createQuery(Product.class);
@@ -155,27 +157,30 @@ public class DBUtils {
 		System.out.println(product);
 		return product;
 	}
-	
+
 	public static Optional<User> getUserByEmail(String email){
 		Session session = getSessionFactory().openSession();
 		Optional<User> user = null;
-		
+
 		try {
 			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-			
+
 			CriteriaQuery<User> query=criteriaBuilder.createQuery(User.class);
 			Root<User> root=query.from(User.class);
 			query.select(root);
 			query.where(criteriaBuilder.equal(root.get("email"), email));
-			
+
 			user = Optional.ofNullable(session.createQuery(query).getSingleResult());
+			if(!user.isEmpty()) {
+				Hibernate.initialize(user.get().getAddress());
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}finally {
 			session.close();
 		}
-		
+
 		return user;
 	}
 
@@ -188,20 +193,20 @@ public class DBUtils {
 			Root<Reviews> rootReview=criteriaQuery.from(Reviews.class);
 			criteriaQuery.select(rootReview);
 			criteriaQuery.where(criteriaBuilder.equal(rootReview.get("reviewsId"), id));
-		
+
 			review=Optional.ofNullable(session.createQuery(criteriaQuery).getSingleResultOrNull());
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}finally {
 			session.close();
 		}
-		
+
 		return review;
 	}
-	
-	
+
+
 	public static Optional<List<Reviews>> getAllReviews(){
 		Session session=getSessionFactory().openSession();
 		Optional<List<Reviews>> reviews=null;
@@ -209,21 +214,21 @@ public class DBUtils {
 			CriteriaQuery<Reviews> criteriaQuery=session.getCriteriaBuilder().createQuery(Reviews.class);
 			Root<Reviews> root=criteriaQuery.from(Reviews.class);
 			criteriaQuery.select(root);
-			
+
 			List<Reviews> listReviews=session.createSelectionQuery(criteriaQuery).getResultList();
 			reviews=Optional.ofNullable(listReviews.size()>0?listReviews:null);
-			
-			
+
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}finally {
 			session.close();
 		}
-		
+
 		return reviews;
 	}
-	
+
 	public static Optional<List<User>> getAllUsers(){
 		Session session = getSessionFactory().openSession();
 		Optional<List<User>> users=null;
@@ -239,21 +244,21 @@ public class DBUtils {
 		}
 		return users;
 	}
-	
-	
+
+
 	public static Optional<User> getUserById(long id){
 		Session session = getSessionFactory().openSession();
 		Optional<User> user= null;
-		
+
 		try {
 			HibernateCriteriaBuilder criteriaBuilder=session.getCriteriaBuilder();
 			CriteriaQuery<User> query=criteriaBuilder.createQuery(User.class);
 			Root<User> root=query.from(User.class);
 			query.select(root);
 			query.where(criteriaBuilder.equal(root.get("id"), id));
-			
+
 			user=Optional.ofNullable(session.createSelectionQuery(query).getSingleResult());
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -261,23 +266,23 @@ public class DBUtils {
 		finally {
 			session.close();
 		}
-		
+
 		return user;
-		
+
 	}
-	
-	
+
+
 	public static Optional<User> addUser(User u){
-		
+
 		Session session=getSessionFactory().openSession();
-		Boolean usersaved = false;
-		
+		boolean usersaved = false;
+
 		try {
 			session.beginTransaction();
 			session.persist(u);
 			usersaved = true;
-			
-			
+
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			usersaved = false;
@@ -291,5 +296,79 @@ public class DBUtils {
 			return Optional.empty();
 		}
 		return Optional.ofNullable(u);
+	}
+
+	public static Optional<List<Cart>> getCartByUserId(User userId){
+		Session session = getSessionFactory().openSession();
+		Optional<List<Cart>> cart=null;
+
+		try {
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<Cart> query = criteriaBuilder.createQuery(Cart.class);
+			Root<Cart> cartRoot = query.from(Cart.class);
+			query.select(cartRoot);
+			query.where(criteriaBuilder.equal(cartRoot.get("userId"), userId));
+
+			cart=Optional.ofNullable(session.createSelectionQuery(query).getResultList());
+			if(!cart.isEmpty()) {
+				for(Cart c:cart.get()) {
+					Hibernate.initialize(c.getProductId());
+					Hibernate.initialize(c.getProductId().getReviews());
+					Hibernate.initialize(c.getProductId().getImages());
+					Hibernate.initialize(c.getUserId());
+					Hibernate.initialize(c.getUserId().getAddress());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+
+		return cart;
+
+	}
+
+
+	public static Optional<List<Cart>> getAllCart(){
+		Session session = getSessionFactory().openSession();
+		Optional<List<Cart>> cart=null;
+		try {
+			CriteriaBuilder criteriaBuilder=session.getCriteriaBuilder();
+			CriteriaQuery<Cart> query=criteriaBuilder.createQuery(Cart.class);
+			Root<Cart> cartRoot=query.from(Cart.class);
+			query.select(cartRoot);
+
+			cart= Optional.ofNullable(session.createSelectionQuery(query).getResultList());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+
+		return cart;
+	}
+
+	public static Optional<Cart> insertInToCart(Cart c) {
+		Session session = getSessionFactory().openSession();
+
+		try {
+			session.beginTransaction();
+			session.persist(c);
+		} catch (Exception e) {
+			// TODO: handle exception
+			session.getTransaction().rollback();
+			e.printStackTrace();
+		}
+		finally {
+			session.getTransaction().commit();
+			session.close();
+		}
+
+		return Optional.ofNullable(c);
 	}
 }

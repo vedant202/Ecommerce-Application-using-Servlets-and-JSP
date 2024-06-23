@@ -34,6 +34,7 @@ public class UserDto {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	@Override
 	public String toString() {
 		return "UserDto [fname=" + fname + ", lname=" + lname + ", email=" + email + "]";

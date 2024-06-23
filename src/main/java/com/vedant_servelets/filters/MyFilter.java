@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class MyFilter implements Filter {
 	private Logger log = LogManager.getLogger(MyFilter.class);
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {

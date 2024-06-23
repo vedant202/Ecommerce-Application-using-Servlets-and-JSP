@@ -3,6 +3,7 @@ package com.vedant_servelets.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -40,6 +42,9 @@ public class User implements Serializable {
 	@Basic
 	private Timestamp date;
 
+	@OneToMany(mappedBy = "userId")
+	private List<Cart> carts;
+
 
 
 	public User() {
@@ -49,7 +54,7 @@ public class User implements Serializable {
 
 
 	public User(String fname, String lname, Address address, String email, String password, String phoneNumber,
-			Timestamp date) {
+			Timestamp date,List<Cart> carts) {
 		super();
 		this.fname = fname;
 		this.lname = lname;
@@ -58,6 +63,7 @@ public class User implements Serializable {
 		this.password = password;
 		this.phoneNumber = phoneNumber;
 		this.date = date;
+		this.carts=carts;
 	}
 
 
@@ -197,6 +203,19 @@ public class User implements Serializable {
 	public void setDate(Timestamp date) {
 		this.date = date;
 	}
+
+
+
+	public List<Cart> getCarts() {
+		return carts;
+	}
+
+
+
+	public void setCarts(List<Cart> carts) {
+		this.carts = carts;
+	}
+
 
 
 

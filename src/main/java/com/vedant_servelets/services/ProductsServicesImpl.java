@@ -19,6 +19,7 @@ public class ProductsServicesImpl implements ProductsServices {
 
 	private Logger log=LogManager.getLogger(ProductsServicesImpl.class);
 
+
 	@Override
 	public HashMap<String, List<Product>> getAllProductsByCategeory() {
 		ArrayProducts products=null;
@@ -49,6 +50,7 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return mapProductsByCateg;
 	}
+
 
 	@Override
 	public Product getProductById(long id) {

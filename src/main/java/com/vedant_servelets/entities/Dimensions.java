@@ -60,6 +60,7 @@ public class Dimensions implements Serializable {
 	public void setDepth(double depth) {
 		this.depth = depth;
 	}
+
 	@Override
 	public String toString() {
 		return "Dimensions [id=" + dimensionId + ", width=" + width + ", height=" + height + ", depth=" + depth + "]";

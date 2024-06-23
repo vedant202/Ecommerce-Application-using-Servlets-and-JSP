@@ -86,6 +86,7 @@ public class Reviews implements Serializable {
 		this.reviewerEmail = reviewerEmail;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Reviews [reviewsId=" + reviewsId + ", rating=" + rating + ", comment=" + comment + ", reviewerName="

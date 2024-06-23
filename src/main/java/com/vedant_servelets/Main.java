@@ -12,6 +12,7 @@ import com.vedant_servelets.entities.Product;
 import com.vedant_servelets.services.ProductServicesImpl2;
 import com.vedant_servelets.services.ProductsServices;
 
+import dtos.ProductDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,14 +24,15 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Main extends HttpServlet {
 	private Logger log=LogManager.getLogger(Main.class);
 
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 //		super.doGet(req, resp);
 		log.info(String.format("Request to /index has been received"));
 
-		ProductsServices productsServices = new ProductServicesImpl2();
-		HashMap<String, List<Product>> getAllProductsByCategeory=productsServices.getAllProductsByCategeory();
+		ProductServicesImpl2 productsServices = new ProductServicesImpl2();
+		HashMap<String, List<ProductDto>> getAllProductsByCategeory=productsServices.getAllProductsByCategeory2();
 
 		Gson gson = new Gson();
 		req.setAttribute("products", gson.toJson(getAllProductsByCategeory));

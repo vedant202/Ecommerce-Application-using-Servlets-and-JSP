@@ -11,6 +11,43 @@
   </welcome-file-list>
   
   <servlet>
+  	<servlet-name>PlaceOrderServlet</servlet-name>
+  	<servlet-class>com.vedant_servelets.products.PlaceOrderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>PlaceOrderServlet</servlet-name>
+  	<url-pattern>/placeOrder</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>CartDecreaseItemsServlet</servlet-name>
+  	<servlet-class>com.vedant_servelets.products.CartDecreaseItemsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>CartDecreaseItemsServlet</servlet-name>
+  	<url-pattern>/cartDecreaseItems</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>CartIncreaseItemsServlet</servlet-name>
+  	<servlet-class>com.vedant_servelets.products.CartIncreaseItemsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>CartIncreaseItemsServlet</servlet-name>
+  	<url-pattern>/cartIncreaseItems</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+  	<servlet-name>CartRemoveService</servlet-name>
+  	<servlet-class>com.vedant_servelets.products.CartRemoveServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>CartRemoveService</servlet-name>
+  	<url-pattern>/removeCart</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
   	<servlet-name>CartGetService</servlet-name>
   	<servlet-class>com.vedant_servelets.products.CartGetService</servlet-class>
   </servlet>
@@ -69,6 +106,7 @@
   	<filter-name>OrderFilter</filter-name>
   	<url-pattern>/orders</url-pattern>
   	<url-pattern>/products</url-pattern>
+  	<url-pattern>/placeOrder</url-pattern>
   	
   </filter-mapping>
 </web-app>

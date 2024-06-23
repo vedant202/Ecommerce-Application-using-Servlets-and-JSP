@@ -1,25 +1,42 @@
 package dtos;
 
-import com.vedant_servelets.entities.Product;
 
 public class CartDto {
-	private Product product;
+	private long id;
+	private ProductDto products;
 	private long items;
 
 	public CartDto() {
 
 	}
 
-	public CartDto(Product product, long items) {
+	public CartDto(ProductDto products, long items) {
 		super();
-		this.product = product;
+		this.products = products;
 		this.items = items;
 	}
-	public Product getProduct() {
-		return product;
+	
+	public CartDto(long id,ProductDto products, long items) {
+		this.id=id;
+		this.products = products;
+		this.items = items;
 	}
-	public void setProduct(Product product) {
-		this.product = product;
+	
+	
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public ProductDto getProductDto() {
+		return products;
+	}
+	public void setProductDto(ProductDto ProductDtos) {
+		this.products = ProductDtos;
 	}
 	public long getItems() {
 		return items;
@@ -28,10 +45,11 @@ public class CartDto {
 		this.items = items;
 	}
 
+
 	@Override
 	public String toString() {
-		return "CartDto [product=" + product + ", items=" + items + "]";
+		return "CartDto [ProductDto=" + products + ", items=" + items + "]";
 	}
-	
+
 
 }

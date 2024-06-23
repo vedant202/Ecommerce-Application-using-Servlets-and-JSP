@@ -34,11 +34,13 @@ public class Login extends HttpServlet{
 		users.put("test@gmail.com",str2);
 	}
 
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		req.getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
 	}
+
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

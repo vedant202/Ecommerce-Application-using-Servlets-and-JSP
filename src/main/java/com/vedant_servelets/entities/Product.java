@@ -15,7 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.OrderColumn;
 
 
 @Entity
@@ -47,7 +47,12 @@ public class Product implements Serializable  {
 	@ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "image_id"))
     @Column(name = "images")
+	@OrderColumn(name = "arrangement_index")
 	private List<String> images;
+
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "products")
+
+	private List<Cart> cart;
 
 
 
@@ -81,11 +86,39 @@ public class Product implements Serializable  {
 		this.images = images;
 	}
 
+
+	public Product(String title, String description, String category, double price, double discountPercentage,
+			double rating, int stock, List<String> tags, String brand, String sku, double weight, Dimensions dimensions,
+			String warrantyInformation, String shippingInformation, String availabilityStatus, List<Reviews> reviews,
+			String returnPolicy, String minimumOrderQuantity, List<String> images, List<Cart> cart) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.category = category;
+		this.price = price;
+		this.discountPercentage = discountPercentage;
+		this.rating = rating;
+		this.stock = stock;
+		this.tags = tags;
+		this.brand = brand;
+		this.sku = sku;
+		this.weight = weight;
+		this.dimensions = dimensions;
+		this.warrantyInformation = warrantyInformation;
+		this.shippingInformation = shippingInformation;
+		this.availabilityStatus = availabilityStatus;
+		this.reviews = reviews;
+		this.returnPolicy = returnPolicy;
+		this.minimumOrderQuantity = minimumOrderQuantity;
+		this.images = images;
+		this.cart = cart;
+	}
+
 	public Product(Long id, String title, String description, String category, double price, double discountPercentage,
 			double rating, int stock, List<String> tags, String brand, String sku, double weight,
 			Dimensions dimensions, String warrantyInformation, String shippingInformation,
 			String availabilityStatus, List<Reviews> reviews, String returnPolicy, String minimumOrderQuantity,
-			List<String> images) {
+			List<String> images,List<Cart> cart) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -107,6 +140,7 @@ public class Product implements Serializable  {
 		this.returnPolicy = returnPolicy;
 		this.minimumOrderQuantity = minimumOrderQuantity;
 		this.images = images;
+		this.cart=cart;
 	}
 	public Long getId() {
 		return id;
@@ -228,6 +262,16 @@ public class Product implements Serializable  {
 	public void setImages(List<String> images) {
 		this.images = images;
 	}
+
+
+	public List<Cart> getCart() {
+		return cart;
+	}
+
+	public void setCart(List<Cart> cart) {
+		this.cart = cart;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", category=" + category
@@ -236,7 +280,9 @@ public class Product implements Serializable  {
 				+ ", dimensions=" + dimensions + ", warrantyInformation=" + warrantyInformation
 				+ ", shippingInformation=" + shippingInformation + ", availabilityStatus=" + availabilityStatus
 				+ ", reviews=" + reviews + ", returnPolicy=" + returnPolicy + ", minimumOrderQuantity="
-				+ minimumOrderQuantity + ", images=" + images + "]";
+				+ minimumOrderQuantity + ", images=" + images + ", cart=" + cart + "]";
 	}
+
+
 
 }

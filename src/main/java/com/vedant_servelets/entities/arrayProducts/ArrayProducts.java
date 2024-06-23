@@ -34,6 +34,7 @@ public class ArrayProducts {
 
 
 
+
 	@Override
 	public String toString() {
 		return "ArrayProducts [products=" + products + "]";

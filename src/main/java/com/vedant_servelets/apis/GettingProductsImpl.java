@@ -27,12 +27,14 @@ public class GettingProductsImpl implements GettingProductsDetails {
 
 
 
+
 	@Override
 	public ArrayProducts getAllProducts() {
 		ArrayProducts products = null;
 		System.out.println("Getting all products from third party");
 		log.info("Getting products  data from :- "+productsApi);
 		Future<Response> f= client.prepareGet(productsApi).addHeader("Content-Type", "application/json").execute(new AsyncCompletionHandler<Response>() {
+
 
 			@Override
 			public Response onCompleted(Response response) throws Exception {
@@ -65,6 +67,7 @@ public class GettingProductsImpl implements GettingProductsDetails {
 
 
 
+
 	@Override
 	public Product getProduct() {
 		Product product=null;
@@ -87,6 +90,7 @@ public class GettingProductsImpl implements GettingProductsDetails {
 		log.info("Getting product  data from :- "+productApi);
 
 		Future<Response> f=client.prepareGet(productApi).addHeader("Content-Type", "application/json").execute(new AsyncCompletionHandler<Response>() {
+
 
 			@Override
 			public Response onCompleted(Response response) throws Exception {

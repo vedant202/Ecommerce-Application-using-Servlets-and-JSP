@@ -20,25 +20,34 @@ public class SanitizeParametersRequestWrapper extends HttpServletRequestWrapper 
 				Map.Entry::getKey,
 				entry -> Arrays.stream(entry.getValue()).map(StringEscapeUtils::escapeHtml4).toArray(String[]::new))));
 	}
-	
+
+
+
+
 	@Override
 	public Map<String, String[]> getParameterMap() {
 		// TODO Auto-generated method stub
 		return this.sanitizedMap;
 	}
-	
+
+
+
+
 	@Override
 	public String[] getParameterValues(String name) {
 		// TODO Auto-generated method stub
 		return Optional.ofNullable(getParameterMap().get(name)).map(values->Arrays.copyOf(values,values.length)).orElse(null);
 	}
 
+
+
+
 	@Override
 	public String getParameter(String name) {
 		// TODO Auto-generated method stub
 		return Optional.ofNullable(getParameterMap().get(name)).map(values->values[0]).orElse(null);
-	} 
-	
+	}
+
 	public void addParameter(String name,String value) {
 		this.sanitizedMap.put(name, new String[] {value});
 	}

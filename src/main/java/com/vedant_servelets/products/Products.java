@@ -23,6 +23,7 @@ public class Products extends HttpServlet {
 
 	private Logger log=LogManager.getLogger(Products.class);
 
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub

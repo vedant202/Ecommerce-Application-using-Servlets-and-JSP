@@ -17,21 +17,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class CartIncreaseItemsServlet extends HttpServlet {
-	
+
 	private CartServices cartServices;
 	public CartIncreaseItemsServlet() {
 		// TODO Auto-generated constructor stub
 		this.cartServices=new CartServicesImpl();
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		long id = Long.parseLong(req.getParameter("id"));
 		Gson gson = new Gson();
-		
+
 		System.out.println("Increase Cart Items with id :-"+id);
-		
+
 		Optional<Cart> cart =this.cartServices.increaseCartItems(id);
 		CartDto cartDto=null;
 		if(cart!=null) {
@@ -41,13 +41,13 @@ public class CartIncreaseItemsServlet extends HttpServlet {
 						,cart.get().getProducts().getAvailabilityStatus(),cart.get().getProducts().getReviews(),cart.get().getProducts().getReturnPolicy(),cart.get().getProducts().getMinimumOrderQuantity(),cart.get().getProducts().getImages()), cart.get().getItems());
 			}
 		}
-		
+
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		PrintWriter out = resp.getWriter();
-		
+
 		out.print(gson.toJson(cartDto));
 		out.flush();
-		
+
 	}
 }

@@ -9,6 +9,7 @@ public interface ProductsServices {
 
 	HashMap<String, List<Product>> getAllProductsByCategeory();
 	Product getProductById(long id);
+	Product save(Product product);
 
 
 

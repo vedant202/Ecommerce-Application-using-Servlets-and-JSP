@@ -47,7 +47,7 @@ public class Product implements Serializable  {
 	@ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "image_id"))
     @Column(name = "images")
-	@OrderColumn(name = "arrangement_index")
+	@OrderColumn(name = "arrangement_index",insertable = true)
 	private List<String> images;
 
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "products")

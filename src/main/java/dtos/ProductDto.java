@@ -28,12 +28,12 @@ public class ProductDto {
 	private List<Reviews> reviews;
 	private String returnPolicy;
 	private String minimumOrderQuantity;
-	
+
 	private List<String> images;
-	
-	
-	
-	
+
+
+
+
 	public ProductDto() {
 		super();
 	}
@@ -68,8 +68,8 @@ public class ProductDto {
 		this.images = images;
 	}
 
-	
-	
+
+
 
 
 	public Long getId() {
@@ -322,6 +322,6 @@ public class ProductDto {
 				+ ", reviews=" + reviews + ", returnPolicy=" + returnPolicy + ", minimumOrderQuantity="
 				+ minimumOrderQuantity + ", images=" + images + "]";
 	}
-	
-	
+
+
 }

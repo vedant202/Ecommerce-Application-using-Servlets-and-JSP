@@ -17,14 +17,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class CartDecreaseItemsServlet extends HttpServlet {
-	
+
 	private CartServices cartServices;
-	
+
 	public CartDecreaseItemsServlet() {
 		// TODO Auto-generated constructor stub
 		cartServices = new CartServicesImpl();
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -39,13 +39,13 @@ public class CartDecreaseItemsServlet extends HttpServlet {
 						,cart.get().getProducts().getAvailabilityStatus(),cart.get().getProducts().getReviews(),cart.get().getProducts().getReturnPolicy(),cart.get().getProducts().getMinimumOrderQuantity(),cart.get().getProducts().getImages()), cart.get().getItems());
 			}
 		}
-		
+
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		PrintWriter out = resp.getWriter();
-		
+
 		out.print(gson.toJson(cartDto));
 		out.flush();
-		
+
 	}
 }

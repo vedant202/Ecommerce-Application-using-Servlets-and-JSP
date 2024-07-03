@@ -26,22 +26,23 @@ public class CartServicesImpl implements CartServices {
 	public Optional<Cart> saveCart(CartTableDto c){
 		return DBUtils.insertInToCart(c);
 	}
-	
-	
+
+
 	@Override
 	public boolean deleteCartById(long id) {
 		// TODO Auto-generated method stub
-		
+
 		return DBUtils.removeCart(id);
-		
-	} 
-	
+
+	}
+
 	@Override
 	public Optional<Cart> increaseCartItems(long id) {
 		// TODO Auto-generated method stub
 		return DBUtils.increaseCartItems(id);
 	}
-	
+
+	@Override
 	public Optional<Cart> decreaseCartItems(long id) {
 		// TODO Auto-generated method stub
 		return DBUtils.decreaseCartItems(id);

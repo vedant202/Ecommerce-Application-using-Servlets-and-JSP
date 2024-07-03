@@ -8,9 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.vedant_servelets.entities.Product;
 import com.vedant_servelets.services.ProductServicesImpl2;
-import com.vedant_servelets.services.ProductsServices;
 
 import dtos.ProductDto;
 import jakarta.servlet.RequestDispatcher;

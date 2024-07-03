@@ -14,5 +14,5 @@ public interface CartServices {
 	public boolean deleteCartById(long id);
 	public Optional<Cart> increaseCartItems(long id);
 	public Optional<Cart> decreaseCartItems(long id);
-	
+
 }

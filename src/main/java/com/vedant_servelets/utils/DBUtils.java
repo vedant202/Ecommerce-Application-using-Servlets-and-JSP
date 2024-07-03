@@ -172,6 +172,38 @@ public class DBUtils {
 		return product;
 	}
 
+	// Get product without user and cart information
+	public static Optional<Product> getProductById2(long id) {
+		Session session = getSessionFactory().openSession();
+		Optional<Product> product = null;
+
+		try {
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<Product> query = criteriaBuilder.createQuery(Product.class);
+			Root<Product> productRoot = query.from(Product.class);
+			query.select(productRoot);
+			query.where(criteriaBuilder.equal(productRoot.get("id"), id));
+			product = Optional.ofNullable(session.createQuery(query).getSingleResult());
+			if (!product.isEmpty()) {
+				System.out.println("getProductById here product is not empty");
+				Hibernate.initialize(product.get().getReviews());
+				Hibernate.initialize(product.get().getImages());
+
+
+				System.out.println("Product id:- " + product.get().getId());
+				System.out.println("Product title:- " + product.get().getTitle());
+				System.out.println("Product reviews:- " + product.get().getReviews());
+
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return product;
+	}
+
 	public static Optional<User> getUserByEmail(String email) {
 		Session session = getSessionFactory().openSession();
 		Optional<User> user = null;
@@ -433,7 +465,7 @@ public class DBUtils {
 		session.beginTransaction();
 
 		try {
-			
+
 
 			Optional<Cart> c = getCartById(id);
 			if (c != null) {
@@ -455,19 +487,19 @@ public class DBUtils {
 			session.getTransaction().rollback();
 			e.printStackTrace();
 		}finally {
-			
+
 			session.close();
 		}
 
 		return Optional.empty();
 	}
-	
+
 	public static Optional<Cart> decreaseCartItems(long id) {
 		Session session = getSessionFactory().openSession();
 		session.beginTransaction();
 
 		try {
-			
+
 
 			Optional<Cart> c = getCartById(id);
 			if (c != null) {
@@ -489,7 +521,7 @@ public class DBUtils {
 			session.getTransaction().rollback();
 			e.printStackTrace();
 		}finally {
-			
+
 			session.close();
 		}
 
@@ -516,5 +548,94 @@ public class DBUtils {
 		}
 
 		return false;
+	}
+
+	public static Product saveProduct(Product product) {
+		Session session = getSessionFactory().openSession();
+
+
+		try {
+			session.beginTransaction();
+			session.persist(product);
+			session.getTransaction().commit();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
+		finally {
+			session.close();
+		}
+		return product;
+	}
+
+	// Update the product with product id
+	public static Optional<Product> updateProduct(Product product) {
+		Product checkProduct=getProductById2(product.getId()).orElse(null);
+		Session session = getSessionFactory().openSession();
+		if(checkProduct!=null) {
+			checkProduct.setAvailabilityStatus(product.getAvailabilityStatus());
+			checkProduct.setBrand(product.getBrand());
+			checkProduct.setCategory(product.getCategory());
+			checkProduct.setDescription(product.getDescription());
+			checkProduct.setDiscountPercentage(product.getDiscountPercentage());
+			checkProduct.setImages(product.getImages());
+			checkProduct.setMinimumOrderQuantity(product.getMinimumOrderQuantity());
+			checkProduct.setPrice(product.getPrice());
+			checkProduct.setRating(product.getRating());
+			checkProduct.setReturnPolicy(product.getReturnPolicy());
+			checkProduct.setShippingInformation(product.getShippingInformation());
+			checkProduct.setSku(product.getSku());
+			checkProduct.setStock(product.getStock());
+			checkProduct.setTags(product.getTags());
+			checkProduct.setTitle(product.getTitle());
+			checkProduct.setWarrantyInformation(product.getWarrantyInformation());
+			checkProduct.setWeight(product.getWeight());
+
+			try {
+				session.beginTransaction();
+				session.merge(checkProduct);
+				session.getTransaction().commit();
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				session.getTransaction().rollback();
+			}finally {
+				session.close();
+			}
+
+			return Optional.ofNullable(checkProduct);
+		}
+
+		return Optional.empty();
+	}
+
+	public static void deleteProductById(long id) {
+
+		Product checkProduct=getProductById2(id).orElse(null);
+
+		if(checkProduct!=null) {
+			Session session=getSessionFactory().openSession();
+
+			try {
+				session.beginTransaction();
+				session.remove(checkProduct);
+				session.getTransaction().commit();
+			} catch (Exception e) {
+				// TODO: handle exception
+				session.getTransaction().rollback();
+				e.printStackTrace();
+
+			}
+			finally {
+				session.close();
+			}
+		}else {
+			throw new RuntimeException("Product is not present with id :- "+id);
+		}
+
+
 	}
 }

@@ -61,18 +61,18 @@ public class CartGetService extends HttpServlet {
 
 		List<CartDto> cartDtos=null;
 
-		
+
 
 		// Checking if cart is empty
 		if(cart!=null) {
-			
+
 			if(!cart.isEmpty()) {
 				cartDtos=cart.get().stream().map(i->new CartDto(i.getId(),new ProductDto(i.getProducts().getId(),i.getProducts().getTitle(),i.getProducts().getDescription(),i.getProducts().getCategory(),i.getProducts().getPrice(),i.getProducts().getDiscountPercentage(),i.getProducts().getRating(),i.getProducts().getStock()
 						,i.getProducts().getTags(),i.getProducts().getBrand(),i.getProducts().getSku(),i.getProducts().getWeight(),i.getProducts().getDimensions(),i.getProducts().getWarrantyInformation(),i.getProducts().getShippingInformation()
 						,i.getProducts().getAvailabilityStatus(),i.getProducts().getReviews(),i.getProducts().getReturnPolicy(),i.getProducts().getMinimumOrderQuantity(),i.getProducts().getImages()), i.getItems())).collect(Collectors.toList());
 
 			}
-			
+
 //			if(cart.isPresent()) {
 //				for(Cart i: cart.get()) {
 //					cartDtos.add(new CartDto(new ProductDto(i.getProducts().getId(),i.getProducts().getTitle(),i.getProducts().getDescription(),i.getProducts().getCategory(),i.getProducts().getPrice(),i.getProducts().getDiscountPercentage(),i.getProducts().getRating(),i.getProducts().getStock()

@@ -8,18 +8,16 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.vedant_servelets.entities.Dimensions;
 import com.vedant_servelets.entities.Product;
-import com.vedant_servelets.entities.Reviews;
 import com.vedant_servelets.utils.DBUtils;
 
 import dtos.ProductDto;
 
 public class ProductServicesImpl2 extends ProductsServicesImpl implements ProductsServices {
 	private Logger log=LogManager.getLogger(ProductServicesImpl2.class);
-	
-	
-	
+
+
+
 	public HashMap<String, List<ProductDto>> getAllProductsByCategeory2() {
 		log.info(String.format("Getting products"));
 
@@ -37,17 +35,17 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 			if(prods==null) {
 				prods = new ArrayList<>();
 			}
-			
+
 //			Long id, String title, String description, String category, double price,
 //			double discountPercentage, double rating, int stock, List<String> tags, String brand, String sku,
 //			double weight, Dimensions dimensions, String warrantyInformation, String shippingInformation,
 //			String availabilityStatus, List<Reviews> reviews, String returnPolicy, String minimumOrderQuantity,
 //			List<String> images
-			
+
 			prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
 					,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
 					,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
-			
+
 			mapProductsByCateg.put(i.getCategory(),prods);
 		});
 

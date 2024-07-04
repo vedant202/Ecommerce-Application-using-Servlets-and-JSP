@@ -280,6 +280,15 @@ public class DBUtils {
 			CriteriaQuery<User> criteriaQuery = session.getCriteriaBuilder().createQuery(User.class);
 			users = Optional.ofNullable(
 					session.createSelectionQuery(criteriaQuery.select(criteriaQuery.from(User.class))).getResultList());
+			if(!users.isEmpty() && users!=null && users.isPresent()) {
+				users.get().forEach(i->{
+					Hibernate.initialize(i.getAddress());
+					Hibernate.initialize(i.getCarts());
+					for(Cart c:i.getCarts()) {
+						Hibernate.initialize(c.getProducts());
+					}
+				});
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

@@ -128,8 +128,8 @@ td>button:hover, th>button {
 </style>
 
 <script type="text/javascript">
-	var products =
-<%=request.getAttribute("products")%>
+	var users =
+<%=request.getAttribute("users")%>
 	;
 </script>
 
@@ -146,14 +146,9 @@ td>button:hover, th>button {
 
 				<thead>
 					<tr>
-						<th style="text-align: center;" colspan="3"><h1>ALL
-								PRODUCTS</h1></th>
-						<th style="text-align: center;" colspan="2">
-							<button style="font-size: large;width: fit-content;">
-								<a style="text-decoration: none; color: white;" href="/FilterTuts/admin/add_product">Add Product</a>
-							</button>
-						</th>
-
+						<th style="text-align: center;" colspan="6"><h1>ALL
+								USERS</h1></th>
+						
 						<th>
 							<div class="cateList" id="cateList" tabindex="100">
 								<span class="anchor">Select Category</span>
@@ -168,17 +163,25 @@ td>button:hover, th>button {
 					<tr class="colsNames">
 						<th id="id" scope="col"><div class="uparrow">^</div>ID
 							<div class="downarrow">^</div></th>
-						<th id="title" scope="col"><div class="uparrow">^</div>TITLE
+						<th id="name" scope="col"><div class="uparrow">^</div>NAME
 							<div class="downarrow">^</div></th>
-						<th id="brand" scope="col"><div class="uparrow">^</div>BRAND
+					
+						<th id="email" scope="col"><div class="uparrow">^</div>EMAIL
 							<div class="downarrow">^</div></th>
-						<th id="cate" scope="col"><div class="uparrow">^</div>CATEGEORY
+							
+						<th id="address"><div class="uparrow">^</div>ADDRESS
 							<div class="downarrow">^</div></th>
-						<th id="status"><div class="uparrow">^</div>STATUS
+							
+							<th id="state"><div class="uparrow">^</div>STATE
 							<div class="downarrow">^</div></th>
-						<th id="stock"><div class="uparrow">^</div>STOCK
+							
+							<th id="city"><div class="uparrow">^</div>CITY
 							<div class="downarrow">^</div></th>
-						<th id="price"><div class="uparrow">^</div>PRICE
+							
+						<th id="phone"><div class="uparrow">^</div>PHONE NUMBER
+							<div class="downarrow">^</div></th>
+							
+						<th id="role"><div class="uparrow">^</div>ROLE
 							<div class="downarrow">^</div></th>
 						<th>Actions</th>
 					</tr>
@@ -190,6 +193,6 @@ td>button:hover, th>button {
 		</div>
 	</div>
 
-	<script src="./js/AdminProduct.js" type="text/javascript"></script>
+	<script src="../js/AdminUser.js" type="text/javascript"></script>
 </body>
 </html>

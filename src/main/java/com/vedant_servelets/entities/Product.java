@@ -1,8 +1,11 @@
 package com.vedant_servelets.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -30,6 +33,10 @@ public class Product implements Serializable  {
 	private double discountPercentage;
 	private double rating;
 	private int stock;
+
+	@Basic
+	private Timestamp createdAt;
+
 	private List<String> tags;
 	private String brand;
 	private String sku;
@@ -58,6 +65,8 @@ public class Product implements Serializable  {
 
 	public Product() {
 		super();
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+
 	}
 
 	public Product(String title, String description, String category, double price, double discountPercentage,
@@ -84,6 +93,8 @@ public class Product implements Serializable  {
 		this.returnPolicy = returnPolicy;
 		this.minimumOrderQuantity = minimumOrderQuantity;
 		this.images = images;
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+
 	}
 
 
@@ -112,13 +123,17 @@ public class Product implements Serializable  {
 		this.minimumOrderQuantity = minimumOrderQuantity;
 		this.images = images;
 		this.cart = cart;
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+
 	}
+
+
 
 	public Product(Long id, String title, String description, String category, double price, double discountPercentage,
 			double rating, int stock, List<String> tags, String brand, String sku, double weight,
-			Dimensions dimensions, String warrantyInformation, String shippingInformation,
-			String availabilityStatus, List<Reviews> reviews, String returnPolicy, String minimumOrderQuantity,
-			List<String> images,List<Cart> cart) {
+			Dimensions dimensions, String warrantyInformation, String shippingInformation, String availabilityStatus,
+			List<Reviews> reviews, String returnPolicy, String minimumOrderQuantity, List<String> images,
+			List<Cart> cart) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -128,6 +143,7 @@ public class Product implements Serializable  {
 		this.discountPercentage = discountPercentage;
 		this.rating = rating;
 		this.stock = stock;
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
 		this.tags = tags;
 		this.brand = brand;
 		this.sku = sku;
@@ -140,8 +156,9 @@ public class Product implements Serializable  {
 		this.returnPolicy = returnPolicy;
 		this.minimumOrderQuantity = minimumOrderQuantity;
 		this.images = images;
-		this.cart=cart;
+		this.cart = cart;
 	}
+
 	public Long getId() {
 		return id;
 	}
@@ -272,16 +289,28 @@ public class Product implements Serializable  {
 		this.cart = cart;
 	}
 
+
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", category=" + category
 				+ ", price=" + price + ", discountPercentage=" + discountPercentage + ", rating=" + rating + ", stock="
-				+ stock + ", tags=" + tags + ", brand=" + brand + ", sku=" + sku + ", weight=" + weight
-				+ ", dimensions=" + dimensions + ", warrantyInformation=" + warrantyInformation
+				+ stock + ", createdAt=" + createdAt + ", tags=" + tags + ", brand=" + brand + ", sku=" + sku
+				+ ", weight=" + weight + ", dimensions=" + dimensions + ", warrantyInformation=" + warrantyInformation
 				+ ", shippingInformation=" + shippingInformation + ", availabilityStatus=" + availabilityStatus
 				+ ", reviews=" + reviews + ", returnPolicy=" + returnPolicy + ", minimumOrderQuantity="
 				+ minimumOrderQuantity + ", images=" + images + ", cart=" + cart + "]";
 	}
+
+
 
 
 

@@ -17,8 +17,10 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 	private Logger log=LogManager.getLogger(ProductServicesImpl2.class);
 
 
-
+// This functions categories product with the help of java and not by sql where all product is fetched from database
+//	Not able to fetch reviews
 	public HashMap<String, List<ProductDto>> getAllProductsByCategeory2() {
+
 		log.info(String.format("Getting products"));
 
 		List<Product> products=null;
@@ -53,5 +55,32 @@ public class ProductServicesImpl2 extends ProductsServicesImpl implements Produc
 		return mapProductsByCateg;
 
 	}
+
+	public HashMap<String, List<ProductDto>> getAllProductsByCategoryBySql() {
+		List<Product> products=null;
+
+		Optional<List<Product>> optionalProd=DBUtils.getAllProductsSortByCreatedAtAndCategory();
+		if(optionalProd.isEmpty()) {
+			log.info(String.format("Product is empty"));
+			return null;
+		}
+		products = optionalProd.get();
+
+		HashMap<String, List<ProductDto>> mapProductsByCateg = new HashMap();
+		products.stream().forEach(i->{
+			List<ProductDto> prods =  mapProductsByCateg.get(i.getCategory());
+			if(prods==null) {
+				prods = new ArrayList<>();
+			}
+
+			prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+					,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+					,i.getAvailabilityStatus(),null,i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+
+			mapProductsByCateg.put(i.getCategory(),prods);
+		});
+
+
+		return mapProductsByCateg;	}
 
 }

@@ -1,10 +1,10 @@
+<%@page import="dtos.ProductDto"%>
 <%@page import="java.util.stream.Collectors"%>
-<%@page import="com.vedant_servelets.entities.Product"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%
-Product product = (Product) request.getAttribute("product");
+ProductDto product = (ProductDto) request.getAttribute("product");
 %>
 <!DOCTYPE html>
 <html>

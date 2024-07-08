@@ -150,12 +150,12 @@ public class DBUtils {
 				System.out.println("getProductById here product is not empty");
 				Hibernate.initialize(product.get().getReviews());
 				Hibernate.initialize(product.get().getImages());
-				Hibernate.initialize(product.get().getCart());
-				for (Cart c : product.get().getCart()) {
-					Hibernate.initialize(c.getUserId());
-					Hibernate.initialize(c.getUserId().getAddress());
-
-				}
+//				Hibernate.initialize(product.get().getCart());
+//				for (Cart c : product.get().getCart()) {
+//					Hibernate.initialize(c.getUserId());
+//					Hibernate.initialize(c.getUserId().getAddress());
+//
+//				}
 
 				System.out.println("Product id:- " + product.get().getId());
 				System.out.println("Product title:- " + product.get().getTitle());
@@ -168,7 +168,7 @@ public class DBUtils {
 		} finally {
 			session.close();
 		}
-		System.out.println(product);
+
 		return product;
 	}
 
@@ -646,5 +646,50 @@ public class DBUtils {
 		}
 
 
+	}
+
+	public static Optional<List<Product>> getAllProductsSortByCreatedAtAndCategory() {
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = null;
+		String sql = """
+				WITH RankedProducts AS (
+				    SELECT id, ROW_NUMBER() OVER (PARTITION BY category ORDER BY createdAt DESC) as rn
+				    FROM product
+				)
+				SELECT id
+				FROM RankedProducts
+				WHERE rn <= 5
+				""";
+
+		String hql = """
+				SELECT
+				    p
+				FROM
+				    Product p
+				LEFT JOIN FETCH p.images i
+				LEFT JOIN FETCH p.reviews re
+				LEFT JOIN FETCH p.dimensions d
+				WHERE
+				    p.id IN :topProductIds
+				ORDER BY
+				    p.category, p.createdAt DESC
+				""";
+		try {
+			List<Long> topProductIds = session.createNativeQuery(sql).getResultList();
+			System.out.println("topProductIds :- "+topProductIds);
+//			List<Product> products=session.createNativeQuery(" With RankedProducts as (SELECT id, category, title, createdAt, ROW_NUMBER() OVER (PARTITION BY category ORDER BY createdAt DESC) as rn    FROM         product) select id,title,category, createdAt from RankedProducts where rn <= 5 order by category, createdAt desc;",Product.class).getResultList();
+//			products=Optional.ofNullable( session.createNativeQuery(" With RankedProducts as (SELECT *, ROW_NUMBER() OVER (PARTITION BY category ORDER BY createdAt DESC) as rn    FROM         product) select r.id, r.title, r.description,r.price,r.rating,r.returnPolicy,r.shippingInformation, r.stock, r.warrantyInformation, r.createdAt, r.discountPercentage,r.category,r.brand,r.availabilityStatus, r.minimumOrderQuantity, r.sku, r.tags, r.weight ,i.image_id, i.images,i.arrangement_index, re.reviewsId,re.comment,re.rating,re.reviewerEmail,re.reviewerName, d.dimensionId as dimensions_dimensionId, d.depth,d.height,d.width  from RankedProducts as r left join product_images as i on id=i.image_id left join product_reviews as pr on r.id=pr.Product_id left join reviews as re on re.reviewsId=pr.reviews_reviewsId left join dimensions as d on r.id=d.dimensionId  where rn <= 5 order by category, createdAt desc;",Product.class).getResultList());
+//			products=Optional.ofNullable( session.createNativeQuery(" With RankedProducts as (SELECT *, ROW_NUMBER() OVER (PARTITION BY category ORDER BY createdAt DESC) as rn    FROM         product) select r.id, r.title, r.description,r.price,r.rating,r.returnPolicy,r.shippingInformation, r.stock, r.warrantyInformation, r.createdAt, r.discountPercentage,r.category,r.brand,r.availabilityStatus, r.minimumOrderQuantity, r.sku, r.tags, r.weight ,i.image_id, i.images,i.arrangement_index, re.reviewsId,re.comment,re.rating as re_rating,re.reviewerEmail,re.reviewerName, d.dimensionId as dimensions_dimensionId, d.depth,d.height,d.width from RankedProducts as r left join product_images as i on r.id=i.image_id left join product_reviews as pr on r.id=pr.Product_id left join reviews as re on re.reviewsId=pr.reviews_reviewsId left join dimensions as d on r.id=d.dimensionId  where rn <= 5 order by category, createdAt desc;",Product.class).getResultList());
+			products=Optional.ofNullable( session.createQuery(hql,Product.class).setParameter("topProductIds", topProductIds).getResultList());
+
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+
+		return products;
 	}
 }

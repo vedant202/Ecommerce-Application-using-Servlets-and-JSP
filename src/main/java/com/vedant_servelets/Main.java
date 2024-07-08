@@ -30,7 +30,7 @@ public class Main extends HttpServlet {
 		log.info(String.format("Request to /index has been received"));
 
 		ProductServicesImpl2 productsServices = new ProductServicesImpl2();
-		HashMap<String, List<ProductDto>> getAllProductsByCategeory=productsServices.getAllProductsByCategeory2();
+		HashMap<String, List<ProductDto>> getAllProductsByCategeory=productsServices.getAllProductsByCategoryBySql();
 
 		Gson gson = new Gson();
 		req.setAttribute("products", gson.toJson(getAllProductsByCategeory));

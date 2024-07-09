@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.criteria.JpaCriteriaQuery;
 
@@ -98,6 +99,52 @@ public class DBUtils {
 
 	}
 
+//	Getting all products Count
+	
+	public static long getAllProductsCount() {
+		Session session = getSessionFactory().openSession();
+		long counts = 0;
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			counts=query.uniqueResult();
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		
+		return counts;
+	}
+	
+	
+//	Getting all products by HQL Query
+	public static Optional<List<Product>> getAllProducts2(int pageNo,int maxResult){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+
+	        Query<Product> query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        query2.setFirstResult((pageNo-1)*maxResult);
+	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+
+//	Get all products using criteria api
 	public static Optional<List<Product>> getAllProducts() {
 		Optional<List<Product>> products = null;
 		Session session = getSessionFactory().openSession();
@@ -405,7 +452,7 @@ public class DBUtils {
 	}
 
 	public static Optional<Cart> insertInToCart(CartTableDto c) {
-		System.out.println("checking CartTableDto " + c);
+		System.out.println("checking CartTableDto " + c.getProduct().getTitle());
 		Session session = getSessionFactory().openSession();
 		Optional<Cart> cart = null;
 		session.beginTransaction();

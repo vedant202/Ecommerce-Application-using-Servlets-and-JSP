@@ -36,7 +36,7 @@ public class AdminUsers extends HttpServlet {
 				System.out.println(i.getEmail());
 				System.out.println(i.getAddress().getAddress1());
 				System.out.println(i.getAddress().getCity());
-				;
+
 				HashMap hm = new HashMap();
 				hm.put("id",Long.toString(i.getId()));
 				hm.put("name", i.getFname().concat(" "+i.getLname()));

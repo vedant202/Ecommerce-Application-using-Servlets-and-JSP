@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.vedant_servelets.entities.Cart;
 import com.vedant_servelets.entities.User;
 import com.vedant_servelets.services.CartServices;
 import com.vedant_servelets.services.CartServicesImpl;
@@ -92,9 +93,18 @@ public class CartPostServlet extends HttpServlet {
 //		cart.setItems(items);
 //		cart.setUserId(user.get());
 
-		cartServices.saveCart(cartTableDto);
+		Optional<Cart> opcart = cartServices.saveCart(cartTableDto);
+		opcart.ifPresentOrElse((c)->{
+			System.out.println(c.getProducts().getTitle()+" Cart is added");
+			try {
+				resp.getWriter().write("{\"status\":\"success\",\"title\":\""+ c.getProducts().getTitle() +"\"}");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-		resp.getWriter().write("{\"status\":\"success\"}");
+			
+		}, null);
 //		resp.sendRedirect("/FilterTuts/orders");
 
 	}

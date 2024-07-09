@@ -23,7 +23,9 @@ async function handleClick(id) {
   console.log(data);
   if(data.status==="failure"){
     window.location.replace("http://localhost:8080/FilterTuts/login")
-  }
+  }else{
+		alert(`${data?.title} added successfully`)
+	  }
 }
 
 Object.keys(products).forEach((a, b) => {

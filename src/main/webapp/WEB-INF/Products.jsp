@@ -93,6 +93,20 @@ body {
     border: 1px solid #938b8b;
 }
 
+.paginationBtn{
+	    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.paginationBtn > button{
+	width: 100px;
+    height: 27px;
+    font-size: large;
+    font-weight: bold;
+    background-color: black;
+    color: white;
+}
 
 </style>
 <script type="text/javascript">
@@ -142,6 +156,11 @@ body {
 				</div>
 			</div>
 		</div>
+	</div>
+	
+	<div class="paginationBtn">
+		<button id="prev" class="prev" onclick="handlePrev()">Prev</button>
+		<button id="next" class="next" onclick="handleNext()">Next</button>
 	</div>
 <script src="./js/Products.js" type="text/javascript" ></script>
 

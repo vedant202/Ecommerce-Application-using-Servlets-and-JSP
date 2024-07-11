@@ -99,7 +99,7 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return prods;
 	}
-	
+
 	public long getAllProductsCount() {
 		return DBUtils.getAllProductsCount();
 	}
@@ -125,5 +125,11 @@ public class ProductsServicesImpl implements ProductsServices {
 
 	public void deleteProductById(long id) {
 		DBUtils.deleteProductById(id);
+	}
+	
+	
+//	we are fetching only id and title from the database for navbar search results
+	public List<HashMap>  getProductIdAndTitle(String reqParam) {
+		return DBUtils.getProductTitlesAndId(reqParam);
 	}
 }

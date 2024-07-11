@@ -46,6 +46,13 @@ ProductDto product = (ProductDto) request.getAttribute("product");
 	border: none;
 	cursor: pointer;
 }
+
+.commentDiv{
+	    display: flex;
+	   	flex-direction:column;
+    align-items: center;
+}
+}
 </style>
 </head>
 <body>
@@ -77,8 +84,18 @@ ProductDto product = (ProductDto) request.getAttribute("product");
 
 		<div class="productReviews">
 			<div>
-				<div>
+				<%-- <div>
 					<h1>Reviews</h1>
+					<div class="commentDiv">
+						<textarea rows="4" cols="88" id="comment" name="comment" placeholder="Write your comment...."></textarea>
+						<div style="width: 100%">
+						<button type="button" id="submitCommit" style="
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+">SUBMIT</button>
+						</div> --%>
+					</div>
 				</div>
 				<%
 				String html = "";

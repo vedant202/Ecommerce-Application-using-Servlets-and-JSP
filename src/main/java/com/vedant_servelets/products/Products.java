@@ -30,7 +30,7 @@ public class Products extends HttpServlet {
 		// TODO Auto-generated method stub
 		log.info(String.format("Request to /products has been received"));
 		log.info(String.format("Getting products"));
-		
+
 		String pageParam = req.getParameter("page");
 		int page;
 		if(pageParam==null) {
@@ -38,24 +38,24 @@ public class Products extends HttpServlet {
 		}else {
 			page=Integer.parseInt(pageParam );
 		}
-		
-		
+
+
 		boolean nextPageAva=false;
 		boolean prvPageAva = false;
 		List<ProductDto> productDtos;
-		
+
 		long pageCount = this.servicesImpl.getAllProductsCount();
 		int cap = 10;
-		
+
 		int pages = (int) Math.ceil((int)(pageCount) /cap);
-		
+
 		if(page<=1) {
 			productDtos=this.servicesImpl.getProducts2(1,cap);
 			prvPageAva=false;
 			nextPageAva=true;
 
 		}
-		
+
 		else if(page>=pages) {
 			productDtos=this.servicesImpl.getProducts2(pages,cap);
 			nextPageAva=false;
@@ -67,8 +67,8 @@ public class Products extends HttpServlet {
 			nextPageAva=true;
 
 		}
-		
-		
+
+
 
 		req.setAttribute("prvPageAva", new Gson().toJson(prvPageAva));
 

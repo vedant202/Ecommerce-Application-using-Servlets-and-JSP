@@ -28,7 +28,7 @@ public class ProductPageHandling extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		String pageParam = req.getParameter("p");
 		System.out.println("pageParam :- "+pageParam);
 		int page;
@@ -37,24 +37,24 @@ public class ProductPageHandling extends HttpServlet {
 		}else {
 			page=Integer.parseInt(pageParam );
 		}
-		
-		
+
+
 		boolean nextPageAva=false;
 		boolean prvPageAva = false;
 		List<ProductDto> productDtos;
-		
+
 		long pageCount = this.servicesImpl.getAllProductsCount();
 		int cap = 10;
-		
+
 		int pages = (int) Math.ceil((int)(pageCount) /cap);
-		
+
 		if(page<=1) {
 			productDtos=this.servicesImpl.getProducts2(1,cap);
 			prvPageAva=false;
 			nextPageAva=true;
 
 		}
-		
+
 		else if(page>=pages) {
 			productDtos=this.servicesImpl.getProducts2(pages,cap);
 			nextPageAva=false;
@@ -66,9 +66,9 @@ public class ProductPageHandling extends HttpServlet {
 			nextPageAva=true;
 
 		}
-		
+
 		HashMap hm = new HashMap();
-		
+
 		hm.put("prvPageAva", prvPageAva);
 		hm.put("nextPageAva", nextPageAva);
 		hm.put("products", productDtos);

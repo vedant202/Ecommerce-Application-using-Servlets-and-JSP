@@ -1,6 +1,7 @@
 package com.vedant_servelets.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +101,7 @@ public class DBUtils {
 	}
 
 //	Getting all products Count
-	
+
 	public static long getAllProductsCount() {
 		Session session = getSessionFactory().openSession();
 		long counts = 0;
@@ -113,11 +114,11 @@ public class DBUtils {
 		}finally {
 			session.close();
 		}
-		
+
 		return counts;
 	}
-	
-	
+
+
 //	Getting all products by HQL Query
 	public static Optional<List<Product>> getAllProducts2(int pageNo,int maxResult){
 		log.info("Getting all products from DB");
@@ -738,5 +739,33 @@ public class DBUtils {
 		}
 
 		return products;
+	}
+	
+	
+//	we are fetching only id and title from the database for navbar search results
+	public static List<HashMap>  getProductTitlesAndId(String param){
+		List<HashMap> results = new ArrayList<HashMap>();
+		Session session = getSessionFactory().openSession();
+		String hql = "SELECT p.id, p.title FROM Product p where p.title like '%"+param.toLowerCase()+"%'";
+		
+		try {
+			List<Object[]> responses=session.createQuery(hql).list();
+			responses.forEach(i->{
+				System.out.println("Id :- "+i[0]+" title :- "+i[1]);
+				HashMap map = new HashMap();
+				map.put("id", (Long)i[0]);
+				map.put("title", (String)i[1]);
+				results.add(map);
+				map = null;
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		
+		return results;
 	}
 }

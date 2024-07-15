@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 
 
@@ -20,99 +20,112 @@
 %>
 <style type="text/css">
 body {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 #cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-    justify-content: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 20px;
+	justify-content: center;
 }
 
 .card {
-    background-color: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    max-width: 300px;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s, box-shadow 0.3s;
+	background-color: #ffffff;
+	border: 1px solid #dddddd;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	max-width: 300px;
+	margin: 20px;
+	display: flex;
+	flex-direction: column;
+	transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	transform: translateY(-10px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 #cardHeader {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border-bottom: 1px solid #dddddd;
+	background-color: #f7f7f7;
+	padding: 10px;
+	border-bottom: 1px solid #dddddd;
 }
 
 #cardHeader h3 {
-    margin: 0;
-    font-size: 1.5em;
-    color: #333333;
+	margin: 0;
+	font-size: 1.5em;
+	color: #333333;
 }
 
 #cardBody {
-    padding: 10px;
-    flex-grow: 1;
+	padding: 10px;
+	flex-grow: 1;
 }
 
 #cardBody p {
-    margin: 0;
-    color: #666666;
-    line-height: 1.5;
+	margin: 0;
+	color: #666666;
+	line-height: 1.5;
 }
 
 #cardFooter {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border-top: 1px solid #dddddd;
-    text-align: center;
+	background-color: #f7f7f7;
+	padding: 10px;
+	border-top: 1px solid #dddddd;
+	text-align: center;
 }
 
 #cardFooter p {
-    margin: 0;
-    color: #999999;
-    font-size: 0.9em;
+	margin: 0;
+	color: #999999;
+	font-size: 0.9em;
 }
-.cardBtn{
+
+.cardBtn {
 	width: 12em;
-    height: 2.33em;
-    cursor: pointer;
-    background: white;
-    border: 1px solid #938b8b;
+	height: 2.33em;
+	cursor: pointer;
+	background: white;
+	border: 1px solid #938b8b;
 }
 
-.paginationBtn{
-	    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+.paginationBtn {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
-.paginationBtn > button{
+.paginationBtn>button {
 	width: 100px;
-    height: 27px;
-    font-size: large;
-    font-weight: bold;
-    background-color: black;
-    color: white;
+	height: 27px;
+	font-size: large;
+	font-weight: bold;
+	background-color: black;
+	color: white;
 }
 
+.mainSection {
+	display: flex;
+}
+
+.mainSection .filter {
+	background-color: #80808038;
+	max-width: 54%;
+	min-width: 13%;
+	height: 100vh;
+}
 </style>
 <script type="text/javascript">
-	let products =<%=request.getAttribute("products")%>;
+	let products =
+<%=request.getAttribute("products")%>
+	;
 	console.log(products);
-	
+	let maxPriceProduct = <%= request.getAttribute("maxprice")%>
 </script>
 </head>
 <body>
@@ -124,45 +137,87 @@ body {
             <li class="navbar-item"><a href="#cart" class="navbar-link cart-icon"><img src="cart-icon.png" alt="Cart"></a></li>
         </ul>
     </nav> -->
-    <t:navbar />
+	<main>
+		<header>
+			<t:navbar />
+		</header>
+		<section class="mainSection">
 
-<div style="text-align: center;">
-	<h1>All Products
-	</h1>
-	</div>
-	<div id="products">
-		<div id="cards">
-			<div id="card">
-				<div id="cardHeader">
-					<h3>Card Header2</h3>
+			<aside class="filter">
+				<h1 style="text-align: center;">Filters</h1>
+
+				<hr>
+				
+					<div style="padding-left: 15px" class="filterPrice" >
+						<h1 style="text-align: center;">Price</h1>
+
+						<div id="priceFilter">
+							<div>
+								<input type="checkbox" value="0-5"> <label>$. 0 to $. 5</label>
+							</div>
+							<div>
+								<input type="checkbox" value="5-10"> <label>$. 5 to $. 10</label>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div style="padding-left: 15px" class="filterCate" >
+						<h1 style="text-align: center;">Categories</h1>
+
+						<div id="filterCate">
+							<div>
+								<input type="checkbox"> <label>$. 0 to $. 5</label>
+							</div>
+							<div>
+								<input type="checkbox"> <label>$. 5 to $. 10</label>
+							</div>
+						</div>
+					</div>
+			</aside>
+			<section>
+				<div style="text-align: center;">
+					<h1>All Products</h1>
 				</div>
-				<div id="cardBody">
-					<p>Card Body</p>
+				<div id="products">
+					<div id="cards">
+						<div id="card">
+							<div id="cardHeader">
+								<h3>Card Header2</h3>
+							</div>
+							<div id="cardBody">
+								<p>Card Body</p>
+							</div>
+							<div id="cardFooter">
+								<p>Card Footer</p>
+							</div>
+						</div>
+
+						<div id="card">
+							<div id="cardHeader">
+								<h3>Card Header2</h3>
+							</div>
+							<div id="cardBody">
+								<p>Card Body</p>
+							</div>
+							<div id="cardFooter">
+								<p>Card Footer</p>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div id="cardFooter">
-					<p>Card Footer</p>
+
+				<div class="paginationBtn">
+					<button id="prev" class="prev" onclick="handlePrev()">Prev</button>
+					<button id="next" class="next" onclick="handleNext()">Next</button>
 				</div>
-			</div>
-			
-			<div id="card">
-				<div id="cardHeader">
-					<h3>Card Header2</h3>
-				</div>
-				<div id="cardBody">
-					<p>Card Body</p>
-				</div>
-				<div id="cardFooter">
-					<p>Card Footer</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div class="paginationBtn">
-		<button id="prev" class="prev" onclick="handlePrev()">Prev</button>
-		<button id="next" class="next" onclick="handleNext()">Next</button>
-	</div>
-<script src="./js/Products.js" type="text/javascript" ></script>
+
+			</section>
+		</section>
+
+
+	</main>
+
+	<script src="./js/Products.js" type="text/javascript"></script>
 
 </body>
 </html>

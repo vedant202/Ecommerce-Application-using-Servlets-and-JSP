@@ -99,6 +99,10 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return prods;
 	}
+	
+	public double getMaxProductPrice() {
+		return DBUtils.getMaxPriceProducts();
+	}
 
 	public long getAllProductsCount() {
 		return DBUtils.getAllProductsCount();
@@ -107,6 +111,21 @@ public class ProductsServicesImpl implements ProductsServices {
 	public List<ProductDto> getProducts2(int pageNo,int maxResult){
 
 		List<Product> products=DBUtils.getAllProducts2(pageNo,maxResult).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+	
+	public List<ProductDto> getProducts2(int pageNo,int maxResult,List<Integer> prices){
+
+		List<Product> products=DBUtils.getAllProducts2(pageNo,prices,maxResult).orElse(null);
 		List<ProductDto> prods=new ArrayList<>();
 		if(products!=null) {
 			products.stream().forEach(i->{

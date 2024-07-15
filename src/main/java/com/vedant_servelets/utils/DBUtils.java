@@ -1,6 +1,7 @@
 package com.vedant_servelets.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -145,6 +146,38 @@ public class DBUtils {
 		return products;
 	}
 
+//	this function get results by applying price filter
+	public static Optional<List<Product>> getAllProducts2(int pageNo,List<Integer> prices,int maxResult){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+	        
+	        if(prices.size()>0) {
+	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices),Product.class);
+	        }else {
+	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        }
+	        
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+
 //	Get all products using criteria api
 	public static Optional<List<Product>> getAllProducts() {
 		Optional<List<Product>> products = null;
@@ -182,6 +215,8 @@ public class DBUtils {
 		return products;
 
 	}
+	
+	
 
 	public static Optional<Product> getProductById(long id) {
 		Session session = getSessionFactory().openSession();
@@ -768,4 +803,24 @@ public class DBUtils {
 		
 		return results;
 	}
+	
+//	getting maximum price of products
+	
+	public static double getMaxPriceProducts() {
+		Session session = getSessionFactory().openSession();
+		String hql = "select max(p.price) from Product p";
+		double maxPrice=0;
+		try {
+			maxPrice=session.createQuery(hql,Double.class).getSingleResult();
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return maxPrice;
+	}
+	
 }

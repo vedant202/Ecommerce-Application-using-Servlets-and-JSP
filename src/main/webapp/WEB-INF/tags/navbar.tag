@@ -106,6 +106,7 @@
 		padding:15px 10px;
 		cursor:pointer;
 		text-align: left;
+		color: black;
 	}
 	
 	.result-box ul li:hover{

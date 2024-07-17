@@ -158,13 +158,13 @@ public class DBUtils {
 			int lastPageNo = (int) Math.ceil(counts/10);
 	        System.out.println(lastPageNo);
 	        Query<Product> query2 = null;
-	        
+
 	        if(prices.size()>0) {
 	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices),Product.class);
 	        }else {
 	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
 	        }
-	        
+
 //	        query2.setFirstResult((pageNo-1)*maxResult);
 //	        query2.setMaxResults(maxResult);
 			 products=Optional.ofNullable(query2.list());
@@ -177,6 +177,202 @@ public class DBUtils {
 		}
 		return products;
 	}
+
+	public static Optional<List<Product>> getAllProducts2(int pageNo,List<Integer> prices,int maxResult,List<String> cates){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+
+	        StringBuffer range = new StringBuffer("(");
+
+
+	        for(String i :cates) {
+	        	range.append("\""+i+"\""+",");
+	        }
+	        range.setCharAt(range.length()-1, ' ');
+	        range.append(")");
+	        
+	        if(prices.size()>0 && cates.size()>0) {
+	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+range,Product.class);
+	        }else {
+	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        }
+
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+	
+	// This function is used to filter category, brand and prices
+	public static Optional<List<Product>> getAllProducts2(int pageNo,List<Integer> prices,int maxResult,List<String> cates, List<String> brands){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+
+	        boolean isNormalQuery = false;
+	        
+	        StringBuffer cateRange = new StringBuffer("(");
+
+
+	        for(String i :cates) {
+	        	cateRange.append("\""+i+"\""+",");
+	        }
+	        cateRange.setCharAt(cateRange.length()-1, ' ');
+	        cateRange.append(")");
+	        
+	        StringBuffer brandRange = new StringBuffer("(");
+
+
+	        for(String i :brands) {
+	        	brandRange.append("\""+i+"\""+",");
+	        }
+	        brandRange.setCharAt(brandRange.length()-1, ' ');
+	        brandRange.append(")");
+	        
+	        StringBuilder buildQuery = null;
+	        
+	        if(prices.size()>0 && cates.size()>0) {
+	        	
+	        	//This is not normal query because of joins
+	        	
+	        	buildQuery = new StringBuilder("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+cateRange);
+//	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+cateRange,Product.class);
+	        }else {
+	        	// Here this is normal query
+	        	
+	        	buildQuery = new StringBuilder("from Product p left join fetch p.images left join fetch p.reviews ");
+	        	isNormalQuery = true;
+//	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        	
+	        }
+	        
+	        // Here checking if brands is empty
+	        if(!brands.isEmpty()) {
+	        	if(isNormalQuery) {
+		        	buildQuery.append("where p.brand in "+brandRange);
+
+	        	}else {
+		        	buildQuery.append("and p.brand in "+brandRange);
+
+	        	}
+	        }
+        	query2=session.createQuery(buildQuery.toString(),Product.class);
+
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+
+	//In this function i am only getting products filter by categories
+	public static Optional<List<Product>> getAllProducts2(int pageNo,int maxResult,List<String> cates){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+
+	        StringBuffer range = new StringBuffer("(");
+
+
+	        for(String i :cates) {
+	        	range.append("\""+i+"\""+",");
+	        }
+	        range.setCharAt(range.length()-1, ' ');
+	        range.append(")");
+	        if(cates.size()>0) {
+	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.category in "+range+"",Product.class);
+	        }else {
+	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        }
+
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+	
+	//In this function i am only getting products filter by brands
+		public static Optional<List<Product>> getAllProducts3(int pageNo,int maxResult,List<String> brands){
+			log.info("Getting all products from DB");
+			Session session = getSessionFactory().openSession();
+			Optional<List<Product>> products = Optional.empty();
+			try {
+				Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+				Long counts =query.uniqueResult();
+
+				int lastPageNo = (int) Math.ceil(counts/10);
+		        System.out.println(lastPageNo);
+		        Query<Product> query2 = null;
+
+		        StringBuffer range = new StringBuffer("(");
+
+
+		        for(String i :brands) {
+		        	range.append("\""+i+"\""+",");
+		        }
+		        range.setCharAt(range.length()-1, ' ');
+		        range.append(")");
+		        if(brands.size()>0) {
+		        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.brand in "+range+"",Product.class);
+		        }else {
+		        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+		        }
+
+//		        query2.setFirstResult((pageNo-1)*maxResult);
+//		        query2.setMaxResults(maxResult);
+				 products=Optional.ofNullable(query2.list());
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			finally {
+				session.close();
+			}
+			return products;
+		}
+	
 
 //	Get all products using criteria api
 	public static Optional<List<Product>> getAllProducts() {
@@ -215,8 +411,8 @@ public class DBUtils {
 		return products;
 
 	}
-	
-	
+
+
 
 	public static Optional<Product> getProductById(long id) {
 		Session session = getSessionFactory().openSession();
@@ -775,21 +971,21 @@ public class DBUtils {
 
 		return products;
 	}
-	
-	
+
+
 //	we are fetching only id and title from the database for navbar search results
 	public static List<HashMap>  getProductTitlesAndId(String param){
-		List<HashMap> results = new ArrayList<HashMap>();
+		List<HashMap> results = new ArrayList<>();
 		Session session = getSessionFactory().openSession();
 		String hql = "SELECT p.id, p.title FROM Product p where p.title like '%"+param.toLowerCase()+"%'";
-		
+
 		try {
 			List<Object[]> responses=session.createQuery(hql).list();
 			responses.forEach(i->{
 				System.out.println("Id :- "+i[0]+" title :- "+i[1]);
 				HashMap map = new HashMap();
-				map.put("id", (Long)i[0]);
-				map.put("title", (String)i[1]);
+				map.put("id", i[0]);
+				map.put("title", i[1]);
 				results.add(map);
 				map = null;
 			});
@@ -800,20 +996,20 @@ public class DBUtils {
 		finally {
 			session.close();
 		}
-		
+
 		return results;
 	}
-	
+
 //	getting maximum price of products
-	
+
 	public static double getMaxPriceProducts() {
 		Session session = getSessionFactory().openSession();
 		String hql = "select max(p.price) from Product p";
 		double maxPrice=0;
 		try {
 			maxPrice=session.createQuery(hql,Double.class).getSingleResult();
-			
-			
+
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -822,5 +1018,41 @@ public class DBUtils {
 		}
 		return maxPrice;
 	}
+
+	//This function returns unique or distinct categories
+	public static List<String> getCategories(){
+		Session session = getSessionFactory().openSession();
+		String hql = "select distinct p.category from Product p";
+		List<String> categories=null;
+
+		try {
+			categories=session.createQuery(hql,String.class).list();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return categories;
+	}
 	
+	//This function returns unique or distinct brands
+		public static List<String> getBrands(){
+			Session session = getSessionFactory().openSession();
+			String hql = "select distinct p.brand from Product p where p.brand not in (\"NULL\")";
+			List<String> brands=null;
+
+			try {
+				brands=session.createQuery(hql,String.class).list();
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			finally {
+				session.close();
+			}
+			return brands;
+		}
+
 }

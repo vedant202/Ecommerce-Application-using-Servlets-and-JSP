@@ -117,7 +117,7 @@ body {
 	background-color: #80808038;
 	max-width: 54%;
 	min-width: 13%;
-	height: 100vh;
+	height: fit-content;
 }
 </style>
 <script type="text/javascript">
@@ -126,6 +126,8 @@ body {
 	;
 	console.log(products);
 	let maxPriceProduct = <%= request.getAttribute("maxprice")%>
+	let categories = <%= request.getAttribute("categories")%>
+	let brands = <%= request.getAttribute("brands")%>
 </script>
 </head>
 <body>
@@ -171,6 +173,15 @@ body {
 							<div>
 								<input type="checkbox"> <label>$. 5 to $. 10</label>
 							</div>
+						</div>
+					</div>
+					
+					<hr>
+					<div style="padding-left: 15px" class="filterCate" >
+						<h1 style="text-align: center;">Brands</h1>
+						
+						<div id="filterBrand">
+						
 						</div>
 					</div>
 			</aside>

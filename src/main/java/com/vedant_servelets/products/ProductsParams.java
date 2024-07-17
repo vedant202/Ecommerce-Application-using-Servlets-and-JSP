@@ -23,8 +23,8 @@ public class ProductsParams extends HttpServlet {
 
 		System.out.println("Product Id :- "+req.getParameter("id"));
 		long id = Long.parseLong(req.getParameter("id"));
-		
-		
+
+
 		ProductsServices productsServices = new ProductsServicesImpl();
 		Product product=productsServices.getProductById(id);
 		ProductDto productDto = new ProductDto(product.getId(),product.getTitle(),product.getDescription(),product.getCategory(),product.getPrice(),product.getDiscountPercentage(),product.getRating(),product.getStock()
@@ -33,8 +33,8 @@ public class ProductsParams extends HttpServlet {
 //		resp.getWriter().print(product);
 		System.out.println("productDto12 :- "+productDto);
 		req.setAttribute("product", productDto);
-		
-		
+
+
 		RequestDispatcher requestDispatcher = req.getRequestDispatcher("WEB-INF/Product.jsp");
 		requestDispatcher.forward(req, resp);
 	}

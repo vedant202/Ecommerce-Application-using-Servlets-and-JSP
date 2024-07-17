@@ -34,24 +34,31 @@ public class Products extends HttpServlet {
 		log.info(String.format("Getting products"));
 
 		String pageParam = req.getParameter("page");
-		List<Integer> pricesFilt = new ArrayList<Integer>();
-//		This var is made because it checks weather to pass response with all filters and pagination 
-// 		if it is true or if false only products 
+		List<Integer> pricesFilt = new ArrayList<>();
+//		This var is made because it checks weather to pass response with all filters and pagination
+// 		if it is true or if false only products
 		boolean stay = false;
-		
+
 		if(req.getParameter("stay")!=null&&!req.getParameter("stay").isBlank()) {
 			stay = Boolean.valueOf(req.getParameter("stay"));
 		}
-		
+
 		if(req.getParameter("price")!=null&&!req.getParameter("price").isBlank()) {
 			String strPrices = req.getParameter("price");
 			String[] splitPrices = strPrices.split("-");
-			
+
 			for(String i:splitPrices) {
 				pricesFilt.add(Integer.parseInt(i.trim()));
 			}
 		}
-		
+		List<String> cates = new ArrayList<>();
+		if(req.getParameter("categories")!=null && !req.getParameter("categories").isBlank()) {
+			String strCates = req.getParameter("categories");
+			for(String i :strCates.split("-")) {
+				cates.add(i);
+			}
+		}
+
 		int page;
 		if(pageParam==null) {
 			page=1;
@@ -70,30 +77,66 @@ public class Products extends HttpServlet {
 		int pages = (int) Math.ceil((int)(pageCount) /cap);
 
 		if(page<=1) {
+//			Here i applied filters on both prices and categories
 			if(pricesFilt.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
-			}else {
+				if(cates.size()>0) {
+					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+				}else {
+					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+				}
+
+			}
+//			Here i applied filters on only categories
+
+			else if(cates.size()>0) {
+				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+			}
+			else {
 				productDtos=this.servicesImpl.getProducts2(1,cap);
 			}
-			
+
 			prvPageAva=false;
 			nextPageAva=true;
 
 		}
 
 		else if(page>=pages) {
+//			Here i applied filters on both prices and categories
 			if(pricesFilt.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
-			}else {
+				if(cates.size()>0) {
+					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+				}else {
+					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+				}
+
+			}
+//			Here i applied filters on only categories
+
+			else if(cates.size()>0) {
+				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+			}
+			else {
 			productDtos=this.servicesImpl.getProducts2(pages,cap);
 			}
 			nextPageAva=false;
 			prvPageAva = true;
 		}
 		else {
+//			Here i applied filters on both prices and categories
 			if(pricesFilt.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
-			}else {
+				if(cates.size()>0) {
+					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+				}else {
+					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+				}
+
+			}
+//			Here i applied filters on only categories
+
+			else if(cates.size()>0) {
+				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+			}
+			else {
 			productDtos=this.servicesImpl.getProducts2(page-1,cap);
 			}
 			prvPageAva=true;
@@ -108,6 +151,8 @@ public class Products extends HttpServlet {
 			hm.put("products", productDtos);
 			resp.getWriter().write(new Gson().toJson(hm));
 		}else {
+			req.setAttribute("brands", new Gson().toJson(this.servicesImpl.getBrands()));
+			req.setAttribute("categories", new Gson().toJson(this.servicesImpl.getCategories()));
 			req.setAttribute("prvPageAva", new Gson().toJson(prvPageAva));
 			req.setAttribute("maxprice", this.servicesImpl.getMaxProductPrice());
 			req.setAttribute("nextPageAva", new Gson().toJson(nextPageAva));
@@ -117,6 +162,6 @@ public class Products extends HttpServlet {
 			dispatcher.forward(req, resp);
 		}
 
-		
+
 	}
 }

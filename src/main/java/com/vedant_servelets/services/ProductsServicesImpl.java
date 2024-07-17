@@ -99,7 +99,7 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return prods;
 	}
-	
+
 	public double getMaxProductPrice() {
 		return DBUtils.getMaxPriceProducts();
 	}
@@ -122,10 +122,39 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return prods;
 	}
-	
+
 	public List<ProductDto> getProducts2(int pageNo,int maxResult,List<Integer> prices){
 
 		List<Product> products=DBUtils.getAllProducts2(pageNo,prices,maxResult).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
+
+	public List<ProductDto> getProducts2(int pageNo,List<String> cates,int maxResult){
+		List<Product> products=DBUtils.getAllProducts2(pageNo,maxResult,cates).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
+	public List<ProductDto> getProducts2(int pageNo,int maxResult,List<Integer> prices,List<String> cates){
+		List<Product> products=DBUtils.getAllProducts2(pageNo,prices,maxResult,cates).orElse(null);
 		List<ProductDto> prods=new ArrayList<>();
 		if(products!=null) {
 			products.stream().forEach(i->{
@@ -145,10 +174,18 @@ public class ProductsServicesImpl implements ProductsServices {
 	public void deleteProductById(long id) {
 		DBUtils.deleteProductById(id);
 	}
-	
-	
+
+
 //	we are fetching only id and title from the database for navbar search results
 	public List<HashMap>  getProductIdAndTitle(String reqParam) {
 		return DBUtils.getProductTitlesAndId(reqParam);
+	}
+
+	public List<String> getCategories(){
+		return DBUtils.getCategories();
+	}
+	
+	public List<String> getBrands(){
+		return DBUtils.getBrands();
 	}
 }

@@ -3,47 +3,23 @@ let str=``;
 console.log("vedant 212")
 
 let priceFilter = []
+let cate = []
+
 const filterObj = {
 	"type":"",
 	values:[]
 }
 
-const filterCate = document.getElementById("priceFilter");
+const filterPrice = document.getElementById("priceFilter");
+const filterCate = document.getElementById("filterCate");
+const filterBrand = document.getElementById("filterBrand");
+
 let filterPriceStr = ``;
-console.log("Max product Price "+maxPriceProduct)
-let div = 0;
-for(let i=2;i<=maxPriceProduct;i++){
-	if(Math.ceil(maxPriceProduct)/i==5){
-		div = i;
-		break;
-	}
-}
 
-for (let i=0;i<=maxPriceProduct;i+=div){
-	filterPriceStr += `<div>
-		<input type="checkbox" value="${i}-${i+div}"> <label>${i} to ${i+div}</label>
-	</div>`;
-}
-filterCate.innerHTML = filterPriceStr;
-
-document.getElementById("priceFilter").addEventListener("change",(e)=>{
-	console.log(e.target,e.target.checked)
-	filterObj.type = "price";
-	let pricestr = "";
-	if(e.target.checked){
-		priceFilter.push(e.target.value);
-		filterObj.values = priceFilter;
-		pricestr = priceFilter.join("-");
-	}else{
-		priceFilter = priceFilter.filter(i=>i!==e.target.value)
-		filterObj.values = priceFilter;
-		pricestr = priceFilter.join("-");
-	}
-	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+pricestr)
-	.then(resp=>resp.json()).then(data=>{
-		console.log(data);
-		str=""
-		data?.products.forEach((i,j)=>{
+//This function setting innerHtml inside cards
+function productsSetInnerHtml(products){
+	let str=``;
+	products.forEach((i,j)=>{
 		str+=`<div  class="card" id="card${j}">
 			<div><img style="object-fit: contain" src="${
 			  i.images[0]
@@ -67,14 +43,87 @@ document.getElementById("priceFilter").addEventListener("change",(e)=>{
 				
 	})
 	document.getElementById("cards").innerHTML=str;
+}
+
+
+console.log("Max product Price "+maxPriceProduct)
+let div = 0;
+for(let i=2;i<=maxPriceProduct;i++){
+	if(Math.ceil(maxPriceProduct)/i==5){
+		div = i;
+		break;
+	}
+}
+
+for (let i=0;i<=maxPriceProduct;i+=div){
+	filterPriceStr += `<div>
+		<input type="checkbox" value="${i}-${i+div}"> <label>${i} to ${i+div}</label>
+	</div>`;
+}
+filterPrice.innerHTML = filterPriceStr;
+
+let filterCateStr = ``;
+
+categories.forEach(i=>{
+	filterCateStr += `<div>
+		<input type="checkbox" value="${i}"> <label>${i}</label>
+	</div>`;
+})
+filterCate.innerHTML = filterCateStr;
+
+let filterBrandStr = ``;
+
+brands.forEach(i=>{
+	filterBrandStr += `<div>
+		<input type="checkbox" value="${i}"> <label>${i}</label>
+	</div>`;
+})
+filterBrand.innerHTML = filterBrandStr;
+
+
+document.getElementById("priceFilter").addEventListener("change",(e)=>{
+	console.log(e.target,e.target.checked)
+	filterObj.type = "price";
+	let pricestr = "";
+	if(e.target.checked){
+		priceFilter.push(e.target.value);
+		filterObj.values = priceFilter;
+		pricestr = priceFilter.join("-");
+	}else{
+		priceFilter = priceFilter.filter(i=>i!==e.target.value)
+		filterObj.values = priceFilter;
+		pricestr = priceFilter.join("-");
+	}
+	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-"))
+	.then(resp=>resp.json()).then(data=>{
+		console.log(data);
+	
+	productsSetInnerHtml(data?.products);
 	})
 	console.log(priceFilter)
 });
 
+document.getElementById("filterCate").addEventListener("change",(e)=>{
+	console.log(e.target,e.target.checked);
+	if(e.target.checked){
+		cate.push(e.target.value);
+	}
+	else{
+		cate = cate.filter(i=>i!==e.target.value)
+	}
+
+	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-"))
+	.then(resp=>resp.json()).then(data=>{
+		console.log(data);
+	productsSetInnerHtml(data?.products);
+
+})
+})
+
 function cardClickHandler(id) {
 	console.log("Card clicked :- ", id);
 	window.location.href = "http://localhost:8080/FilterTuts/product?id=" + id;
-  }
+}
   
   async function handleClick(id) {
 	console.log("Card id :- ", id);
@@ -115,32 +164,9 @@ function cardClickHandler(id) {
 		document.getElementById("next").disabled = false;
 	}
 
-	str=""
-	data?.products.forEach((i,j)=>{
-		str+=`<div  class="card" id="card${j}">
-			<div><img style="object-fit: contain" src="${
-			  i.images[0]
-			}" alt="" width=250px height=250px/> </div>
-						<div style="cursor: pointer;" onclick="cardClickHandler(${
-						  i.id
-						})" >
-						  <div id="cardHeader">
-							  <h3>${i.title ?? i.brand}</h3>
-						  </div>
-						  <div id="cardBody">
-							  <p>${i.title ?? i.brand}</p>
-							  <div><h5>$. ${i?.price}</h5></div>
-						  </div>
-						  </div>
-						<div id="cardFooter">
-							<input type="hidden" value="${i.id}" id="hiddenInput" />
-							<Button class="cardBtn" onClick="handleClick(${i.id})" id="cartBtn">Add To Cart</Button>
-						</div>
-					</div>`;
-				
-	})
-	document.getElementById("cards").innerHTML=str;
+	
 
+	productsSetInnerHtml(data?.products);
 
   }
 
@@ -161,57 +187,12 @@ function cardClickHandler(id) {
 		document.getElementById("next").disabled = false;
 	}
 
-	str=""
-	data?.products.forEach((i,j)=>{
-		str+=`<div  class="card" id="card${j}">
-			<div><img style="object-fit: contain" src="${
-			  i.images[0]
-			}" alt="" width=250px height=250px/> </div>
-						<div style="cursor: pointer;" onclick="cardClickHandler(${
-						  i.id
-						})" >
-						  <div id="cardHeader">
-							  <h3>${i.title ?? i.brand}</h3>
-						  </div>
-						  <div id="cardBody">
-							  <p>${i.title ?? i.brand}</p>
-							  <div><h5>$. ${i?.price}</h5></div>
-						  </div>
-						  </div>
-						<div id="cardFooter">
-							<input type="hidden" value="${i.id}" id="hiddenInput" />
-							<Button class="cardBtn" onClick="handleClick(${i.id})" id="cartBtn">Add To Cart</Button>
-						</div>
-					</div>`;
-				
-	})
-	document.getElementById("cards").innerHTML=str;
+	
+
+	productsSetInnerHtml(data?.products);
 
   }
 
 
-  
-  products.forEach((i,j)=>{
-	str+=`<div  class="card" id="card${j}">
-        <div><img style="object-fit: contain" src="${
-          i.images[0]
-        }" alt="" width=250px height=250px/> </div>
-                    <div style="cursor: pointer;" onclick="cardClickHandler(${
-                      i.id
-                    })" >
-                      <div id="cardHeader">
-                          <h3>${i.title ?? i.brand}</h3>
-                      </div>
-                      <div id="cardBody">
-                          <p>${i.title ?? i.brand}</p>
-                          <div><h5>$. ${i?.price}</h5></div>
-                      </div>
-                      </div>
-                    <div id="cardFooter">
-                        <input type="hidden" value="${i.id}" id="hiddenInput" />
-                        <Button class="cardBtn" onClick="handleClick(${i.id})" id="cartBtn">Add To Cart</Button>
-                    </div>
-                </div>`;
-			
-})
-document.getElementById("cards").innerHTML=str;
+  productsSetInnerHtml(products);
+

@@ -4,6 +4,7 @@ console.log("vedant 212")
 
 let priceFilter = []
 let cate = []
+let brandArr = []
 
 const filterObj = {
 	"type":"",
@@ -94,7 +95,7 @@ document.getElementById("priceFilter").addEventListener("change",(e)=>{
 		filterObj.values = priceFilter;
 		pricestr = priceFilter.join("-");
 	}
-	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-"))
+	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
 	.then(resp=>resp.json()).then(data=>{
 		console.log(data);
 	
@@ -112,7 +113,24 @@ document.getElementById("filterCate").addEventListener("change",(e)=>{
 		cate = cate.filter(i=>i!==e.target.value)
 	}
 
-	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-"))
+	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
+	.then(resp=>resp.json()).then(data=>{
+		console.log(data);
+	productsSetInnerHtml(data?.products);
+
+})
+})
+
+filterBrand.addEventListener("change",(e)=>{
+	console.log(e.target,e.target.checked);
+	if(e.target.checked){
+		brandArr.push(e.target.value);
+	}
+	else{
+		brandArr = brandArr.filter(i=>i!==e.target.value)
+	}
+
+	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
 	.then(resp=>resp.json()).then(data=>{
 		console.log(data);
 	productsSetInnerHtml(data?.products);

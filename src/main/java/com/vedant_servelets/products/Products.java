@@ -59,6 +59,14 @@ public class Products extends HttpServlet {
 			}
 		}
 
+		List<String> brands = new ArrayList<>();
+		if(req.getParameter("brands")!=null && !req.getParameter("brands").isBlank()) {
+			String strBrands = req.getParameter("brands");
+			for(String i :strBrands.split("-")) {
+				brands.add(i);
+			}
+		}
+
 		int page;
 		if(pageParam==null) {
 			page=1;
@@ -76,23 +84,64 @@ public class Products extends HttpServlet {
 
 		int pages = (int) Math.ceil((int)(pageCount) /cap);
 
+
+
+
 		if(page<=1) {
 //			Here i applied filters on both prices and categories
-			if(pricesFilt.size()>0) {
-				if(cates.size()>0) {
-					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
-				}else {
-					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//			if(pricesFilt.size()>0) {
+//				if(cates.size()>0) {
+//
+//					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+//				}else {
+//					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//				}
+//
+//			}
+////			Here i applied filters on only categories
+//
+//			else if(cates.size()>0) {
+//				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+//			}
+//			else {
+//				productDtos=this.servicesImpl.getProducts2(1,cap);
+//			}
+
+			if(pricesFilt.isEmpty() ){
+				if(cates.isEmpty()){
+					if(brands.isEmpty()){
+						// prices and cates and brands is empty
+						productDtos=this.servicesImpl.getProducts2(1,cap);
+
+					}else{
+						// brands is not empty
+						productDtos=this.servicesImpl.getProductsByBrands(1,brands,cap);
+					}
+				}else{
+					if(!brands.isEmpty()){
+
+						productDtos=this.servicesImpl.getProductsByBrands(1,brands,cap);
+
+					}else{
+						productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+					}
+				}
+			}else{
+				if(!cates.isEmpty() && !brands.isEmpty()){
+				// prices ,cates and brands are not empty
+					productDtos = this.servicesImpl.getProducts2(1, cap, pricesFilt, cates,brands);
+				}else if(!cates.isEmpty()){
+				// prices and cates are not empty
+					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt,cates);
+
+				}else if(!brands.isEmpty()){
+					// prices and brands are not empty
+					productDtos=this.servicesImpl.getProductsByPriceAndBrand(1,cap,pricesFilt,brands);
+				}else{
+					// cates and prices are not empty
+					productDtos = this.servicesImpl.getProducts2(1, cap, pricesFilt);
 				}
 
-			}
-//			Here i applied filters on only categories
-
-			else if(cates.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
-			}
-			else {
-				productDtos=this.servicesImpl.getProducts2(1,cap);
 			}
 
 			prvPageAva=false;
@@ -102,42 +151,118 @@ public class Products extends HttpServlet {
 
 		else if(page>=pages) {
 //			Here i applied filters on both prices and categories
-			if(pricesFilt.size()>0) {
-				if(cates.size()>0) {
-					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
-				}else {
-					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//			if(pricesFilt.size()>0) {
+//				if(cates.size()>0) {
+//					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+//				}else {
+//					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//				}
+//
+//			}
+////			Here i applied filters on only categories
+//
+//			else if(cates.size()>0) {
+//				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+//			}
+//			else {
+//			productDtos=this.servicesImpl.getProducts2(pages,cap);
+//			}
+
+			if(pricesFilt.isEmpty() ){
+				if(cates.isEmpty()){
+					if(brands.isEmpty()){
+						// prices and cates and brands is empty
+						productDtos=this.servicesImpl.getProducts2(pages,cap);
+
+					}else{
+						// brands is not empty
+						productDtos=this.servicesImpl.getProductsByBrands(pages,brands,cap);
+					}
+				}else{
+					if(!brands.isEmpty()){
+
+						productDtos=this.servicesImpl.getProductsByBrands(pages,brands,cap);
+
+					}else{
+						productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+					}
+				}
+			}else{
+				if(!cates.isEmpty() && !brands.isEmpty()){
+				// prices ,cates and brands are not empty
+					productDtos = this.servicesImpl.getProducts2(pages, cap, pricesFilt, cates,brands);
+				}else if(!cates.isEmpty()){
+				// prices and cates are not empty
+					productDtos=this.servicesImpl.getProducts2(pages,cap,pricesFilt,cates);
+
+				}else if(!brands.isEmpty()){
+					// prices and brands are not empty
+					productDtos=this.servicesImpl.getProductsByPriceAndBrand(pages,cap,pricesFilt,brands);
+				}else{
+					// cates and prices are not empty
+					productDtos = this.servicesImpl.getProducts2(pages, cap, pricesFilt);
 				}
 
 			}
-//			Here i applied filters on only categories
 
-			else if(cates.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
-			}
-			else {
-			productDtos=this.servicesImpl.getProducts2(pages,cap);
-			}
+
 			nextPageAva=false;
 			prvPageAva = true;
 		}
 		else {
 //			Here i applied filters on both prices and categories
-			if(pricesFilt.size()>0) {
-				if(cates.size()>0) {
-					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
-				}else {
-					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//			if(pricesFilt.size()>0) {
+//				if(cates.size()>0) {
+//					productDtos = this.servicesImpl.getProducts2(page, pages, pricesFilt, cates);
+//				}else {
+//					productDtos=this.servicesImpl.getProducts2(1,cap,pricesFilt);
+//				}
+//
+//			}
+////			Here i applied filters on only categories
+//
+//			else if(cates.size()>0) {
+//				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+//			}
+//			else {
+//			productDtos=this.servicesImpl.getProducts2(page-1,cap);
+//			}
+
+			if(pricesFilt.isEmpty() ){
+				if(cates.isEmpty()){
+					if(brands.isEmpty()){
+						// prices and cates and brands is empty
+						productDtos=this.servicesImpl.getProducts2(page-1,cap);
+
+					}else{
+						// brands is not empty
+						productDtos=this.servicesImpl.getProductsByBrands(page-1,brands,cap);
+					}
+				}else{
+					if(!brands.isEmpty()){
+
+						productDtos=this.servicesImpl.getProductsByBrands(page-1,brands,cap);
+
+					}else{
+						productDtos=this.servicesImpl.getProducts2(1,cates,cap);
+					}
+				}
+			}else{
+				if(!cates.isEmpty() && !brands.isEmpty()){
+				// prices ,cates and brands are not empty
+					productDtos = this.servicesImpl.getProducts2(page-1, cap, pricesFilt, cates,brands);
+				}else if(!cates.isEmpty()){
+				// prices and cates are not empty
+					productDtos=this.servicesImpl.getProducts2(page-1,cap,pricesFilt,cates);
+
+				}else if(!brands.isEmpty()){
+					// prices and brands are not empty
+					productDtos=this.servicesImpl.getProductsByPriceAndBrand(page-1,cap,pricesFilt,brands);
+				}else{
+					// cates and prices are not empty
+					productDtos = this.servicesImpl.getProducts2(page-1, cap, pricesFilt);
 				}
 
-			}
-//			Here i applied filters on only categories
-
-			else if(cates.size()>0) {
-				productDtos=this.servicesImpl.getProducts2(1,cates,cap);
-			}
-			else {
-			productDtos=this.servicesImpl.getProducts2(page-1,cap);
 			}
 			prvPageAva=true;
 			nextPageAva=true;

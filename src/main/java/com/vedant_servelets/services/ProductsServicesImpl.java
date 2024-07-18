@@ -153,6 +153,21 @@ public class ProductsServicesImpl implements ProductsServices {
 		return prods;
 	}
 
+	// Here we are getting products by brands
+	public List<ProductDto> getProductsByBrands(int pageNo,List<String> brands,int maxResult){
+		List<Product> products=DBUtils.getAllProducts3(pageNo,maxResult,brands).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
 	public List<ProductDto> getProducts2(int pageNo,int maxResult,List<Integer> prices,List<String> cates){
 		List<Product> products=DBUtils.getAllProducts2(pageNo,prices,maxResult,cates).orElse(null);
 		List<ProductDto> prods=new ArrayList<>();
@@ -166,6 +181,49 @@ public class ProductsServicesImpl implements ProductsServices {
 
 		return prods;
 	}
+
+	public List<ProductDto> getProducts2(int pageNo,int maxResult,List<Integer> prices,List<String> cates,List<String> brands){
+		List<Product> products=DBUtils.getAllProducts2(pageNo,prices,maxResult,cates,brands).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
+	public List<ProductDto> getProductsByCateAndBrand(int pageNo,int maxResult,List<String> cates,List<String> brands){
+		List<Product> products=DBUtils.getAllProducts3(pageNo,maxResult,cates,brands).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
+	public List<ProductDto> getProductsByPriceAndBrand(int pageNo,int maxResult,List<Integer> prices,List<String> brands){
+		List<Product> products=DBUtils.getAllProducts3(pageNo,prices,maxResult,brands).orElse(null);
+		List<ProductDto> prods=new ArrayList<>();
+		if(products!=null) {
+			products.stream().forEach(i->{
+				prods.add(new ProductDto(i.getId(),i.getTitle(),i.getDescription(),i.getCategory(),i.getPrice(),i.getDiscountPercentage(),i.getRating(),i.getStock()
+						,i.getTags(),i.getBrand(),i.getSku(),i.getWeight(),i.getDimensions(),i.getWarrantyInformation(),i.getShippingInformation()
+						,i.getAvailabilityStatus(),i.getReviews(),i.getReturnPolicy(),i.getMinimumOrderQuantity(),i.getImages()));
+			});
+		}
+
+		return prods;
+	}
+
 
 	public Product updateProductById(Product product) {
 		return DBUtils.updateProduct(product).orElseThrow(() -> new RuntimeException("Product with id "+ product.getId() +" and title "+ product.getTitle() +" is not present."));
@@ -184,7 +242,7 @@ public class ProductsServicesImpl implements ProductsServices {
 	public List<String> getCategories(){
 		return DBUtils.getCategories();
 	}
-	
+
 	public List<String> getBrands(){
 		return DBUtils.getBrands();
 	}

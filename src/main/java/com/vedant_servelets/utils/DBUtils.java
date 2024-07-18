@@ -178,6 +178,7 @@ public class DBUtils {
 		return products;
 	}
 
+	// This function is used to filter by category, prices
 	public static Optional<List<Product>> getAllProducts2(int pageNo,List<Integer> prices,int maxResult,List<String> cates){
 		log.info("Getting all products from DB");
 		Session session = getSessionFactory().openSession();
@@ -198,7 +199,7 @@ public class DBUtils {
 	        }
 	        range.setCharAt(range.length()-1, ' ');
 	        range.append(")");
-	        
+
 	        if(prices.size()>0 && cates.size()>0) {
 	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+range,Product.class);
 	        }else {
@@ -217,8 +218,8 @@ public class DBUtils {
 		}
 		return products;
 	}
-	
-	// This function is used to filter category, brand and prices
+
+	// This function is used to filter by category, brand and prices
 	public static Optional<List<Product>> getAllProducts2(int pageNo,List<Integer> prices,int maxResult,List<String> cates, List<String> brands){
 		log.info("Getting all products from DB");
 		Session session = getSessionFactory().openSession();
@@ -232,7 +233,7 @@ public class DBUtils {
 	        Query<Product> query2 = null;
 
 	        boolean isNormalQuery = false;
-	        
+
 	        StringBuffer cateRange = new StringBuffer("(");
 
 
@@ -241,7 +242,7 @@ public class DBUtils {
 	        }
 	        cateRange.setCharAt(cateRange.length()-1, ' ');
 	        cateRange.append(")");
-	        
+
 	        StringBuffer brandRange = new StringBuffer("(");
 
 
@@ -250,24 +251,24 @@ public class DBUtils {
 	        }
 	        brandRange.setCharAt(brandRange.length()-1, ' ');
 	        brandRange.append(")");
-	        
+
 	        StringBuilder buildQuery = null;
-	        
+
 	        if(prices.size()>0 && cates.size()>0) {
-	        	
+
 	        	//This is not normal query because of joins
-	        	
+
 	        	buildQuery = new StringBuilder("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+cateRange);
 //	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices) +" and p.category in "+cateRange,Product.class);
 	        }else {
 	        	// Here this is normal query
-	        	
+
 	        	buildQuery = new StringBuilder("from Product p left join fetch p.images left join fetch p.reviews ");
 	        	isNormalQuery = true;
 //	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
-	        	
+
 	        }
-	        
+
 	        // Here checking if brands is empty
 	        if(!brands.isEmpty()) {
 	        	if(isNormalQuery) {
@@ -332,9 +333,10 @@ public class DBUtils {
 		}
 		return products;
 	}
-	
+
+
 	//In this function i am only getting products filter by brands
-		public static Optional<List<Product>> getAllProducts3(int pageNo,int maxResult,List<String> brands){
+	public static Optional<List<Product>> getAllProducts3(int pageNo,int maxResult,List<String> brands){
 			log.info("Getting all products from DB");
 			Session session = getSessionFactory().openSession();
 			Optional<List<Product>> products = Optional.empty();
@@ -372,7 +374,97 @@ public class DBUtils {
 			}
 			return products;
 		}
-	
+
+
+	public static Optional<List<Product>> getAllProducts3(int pageNo,List<Integer> prices,int maxResult,List<String> brands){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+
+	        StringBuffer range = new StringBuffer("(");
+
+
+	        for(String i :brands) {
+	        	range.append("\""+i+"\""+",");
+	        }
+	        range.setCharAt(range.length()-1, ' ');
+	        range.append(")");
+	        if(brands.size()>0) {
+	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.brand in "+range+" and p.price <"+Collections.max(prices)+" and p.price> "+Collections.min(prices),Product.class);
+	        }else {
+	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        }
+
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+
+	public static Optional<List<Product>> getAllProducts3(int pageNo,int maxResult,List<String> cates,List<String> brands){
+		log.info("Getting all products from DB");
+		Session session = getSessionFactory().openSession();
+		Optional<List<Product>> products = Optional.empty();
+		try {
+			Query<Long> query=session.createQuery("SELECT count(p) FROM Product p", Long.class);
+			Long counts =query.uniqueResult();
+
+			int lastPageNo = (int) Math.ceil(counts/10);
+	        System.out.println(lastPageNo);
+	        Query<Product> query2 = null;
+
+	        StringBuffer range = new StringBuffer("(");
+
+
+	        for(String i :brands) {
+	        	range.append("\""+i+"\""+",");
+	        }
+	        range.setCharAt(range.length()-1, ' ');
+	        range.append(")");
+
+	        StringBuffer rangeCate = new StringBuffer("(");
+
+
+	        for(String i :cates) {
+	        	rangeCate.append("\""+i+"\""+",");
+	        }
+	        rangeCate.setCharAt(rangeCate.length()-1, ' ');
+	        rangeCate.append(")");
+
+
+	        if(brands.size()>0 && cates.size()>0) {
+	        	query2 = session.createQuery("from Product p left join fetch p.images left join fetch p.reviews where p.brand in "+range+" and p.category in "+rangeCate,Product.class);
+	        }else {
+	        	query2=session.createQuery("from Product p left join fetch p.images left join fetch p.reviews ",Product.class);
+	        }
+
+//	        query2.setFirstResult((pageNo-1)*maxResult);
+//	        query2.setMaxResults(maxResult);
+			 products=Optional.ofNullable(query2.list());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}
+		return products;
+	}
+
 
 //	Get all products using criteria api
 	public static Optional<List<Product>> getAllProducts() {
@@ -1036,7 +1128,7 @@ public class DBUtils {
 		}
 		return categories;
 	}
-	
+
 	//This function returns unique or distinct brands
 		public static List<String> getBrands(){
 			Session session = getSessionFactory().openSession();

@@ -6,10 +6,9 @@ let priceFilter = []
 let cate = []
 let brandArr = []
 
-const filterObj = {
-	"type":"",
-	values:[]
-}
+let prodsArray = [];
+prodsArray = products;
+
 
 const filterPrice = document.getElementById("priceFilter");
 const filterCate = document.getElementById("filterCate");
@@ -20,6 +19,7 @@ let filterPriceStr = ``;
 //This function setting innerHtml inside cards
 function productsSetInnerHtml(products){
 	let str=``;
+	
 	products.forEach((i,j)=>{
 		str+=`<div  class="card" id="card${j}">
 			<div><img style="object-fit: contain" src="${
@@ -84,20 +84,18 @@ filterBrand.innerHTML = filterBrandStr;
 
 document.getElementById("priceFilter").addEventListener("change",(e)=>{
 	console.log(e.target,e.target.checked)
-	filterObj.type = "price";
 	let pricestr = "";
 	if(e.target.checked){
 		priceFilter.push(e.target.value);
-		filterObj.values = priceFilter;
 		pricestr = priceFilter.join("-");
 	}else{
 		priceFilter = priceFilter.filter(i=>i!==e.target.value)
-		filterObj.values = priceFilter;
 		pricestr = priceFilter.join("-");
 	}
 	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
 	.then(resp=>resp.json()).then(data=>{
 		console.log(data);
+		prodsArray = data?.products;
 	
 	productsSetInnerHtml(data?.products);
 	})
@@ -116,6 +114,7 @@ document.getElementById("filterCate").addEventListener("change",(e)=>{
 	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
 	.then(resp=>resp.json()).then(data=>{
 		console.log(data);
+		prodsArray = data?.products;
 	productsSetInnerHtml(data?.products);
 
 })
@@ -133,6 +132,7 @@ filterBrand.addEventListener("change",(e)=>{
 	fetch("http://localhost:8080/FilterTuts/products?stay=true&&price="+priceFilter.join('-')+"&&categories="+cate.join("-")+"&&brands="+brandArr.join('-'))
 	.then(resp=>resp.json()).then(data=>{
 		console.log(data);
+		prodsArray = data?.products;
 	productsSetInnerHtml(data?.products);
 
 })
@@ -183,7 +183,7 @@ function cardClickHandler(id) {
 	}
 
 	
-
+	prodsArray = data?.products;
 	productsSetInnerHtml(data?.products);
 
   }
@@ -206,11 +206,40 @@ function cardClickHandler(id) {
 	}
 
 	
-
+	prodsArray = data?.products;
 	productsSetInnerHtml(data?.products);
 
   }
 
-
+  
   productsSetInnerHtml(products);
 
+document.getElementById("sortLabel").addEventListener("mouseover",(e)=>{
+	console.log("mouseover")
+	document.querySelector(".sortDropDown").classList.add("show");
+})
+document.querySelector(".sort").addEventListener("mouseleave",(e)=>{
+	console.log("mouseleave")
+	document.querySelector(".sortDropDown").classList.remove("show");
+})
+let temp=[]
+temp = [...prodsArray];
+document.querySelectorAll(".sortValue").forEach(i=>i.addEventListener("click",(e)=>{
+	console.log(e.target,e.target.innerText)
+	console.log(prodsArray)
+	document.getElementById("sortBy").innerText=e.target.innerText
+
+	if(Number.parseInt(e.target.attributes.getNamedItem("list-data").value)===-1){
+		console.log("Ascending")
+		productsSetInnerHtml(prodsArray.sort((a,b)=>a.price-b.price))
+	}else if(Number.parseInt(e.target.attributes.getNamedItem("list-data").value)===1){
+		console.log("Descending");
+		productsSetInnerHtml(prodsArray.sort((a,b)=>b.price-a.price))
+
+
+	}else{
+		console.log("Normal")
+		productsSetInnerHtml(temp)
+
+	}
+}))

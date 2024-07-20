@@ -119,6 +119,54 @@ body {
 	min-width: 13%;
 	height: fit-content;
 }
+.header2{
+	    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.sort{
+/*     border: 1px solid gray;
+ */    width: 13em;
+/*     padding: 7px;      
+ */    margin-right: 26px;
+/*         height: fit-content;
+ *//*     display: inline-block;
+ */
+}
+
+.sortLabel{
+	    border: 1px solid gray;
+    width: inherit;
+    padding: 7px;
+    margin-right: 26px;
+    background: #efebeb;
+    cursor: pointer;
+}
+
+.show{
+		display:block !important;
+}
+
+.sortDropDown{
+	position: absolute;
+    border: 1px solid;
+    width: inherit;
+    padding: 7px;
+    right: 10px;
+    top: 125px;
+    z-index: 11;
+    background: #efebeb;
+    display: none;
+}
+.sortDropDown li{
+	list-style:none;
+	padding:10px 0px;
+	cursor: pointer;
+}
+
+.sortDropDown li:hover{
+background-color: white;
+}
 </style>
 <script type="text/javascript">
 	let products =
@@ -186,9 +234,28 @@ body {
 					</div>
 			</aside>
 			<section>
-				<div style="text-align: center;">
+			<div class="header2">
+			<div style="text-align: center; margin-left: 97px;    font-size: larger;">
+				
 					<h1>All Products</h1>
 				</div>
+				<div class="sort">
+					<div id="sortLabel" class="sortLabel">
+						Sort by :- <span id="sortBy">Select Filter</span><span class="sortArrow">&#11167;</span>
+					</div>
+					<div class="sortDropDown">
+					<hr>
+						<ul>
+							<li class="sortValue" list-data="0">Select Filter </li>
+							<li class="sortValue" list-data="1">Price: High To Low</li>
+							<li class="sortValue" list-data="-1">Price: Low To High</li>
+						</ul>
+					</div>
+					<div></div>
+				</div>
+			</div>
+				
+				<hr />
 				<div id="products">
 					<div id="cards">
 						<div id="card">
